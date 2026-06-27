@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bản đồ Nhà văn, Nhà thơ, Tiểu thuyết gia nổi tiếng</title>
@@ -5086,7 +5085,7 @@ function toggleUserLocation() {
                     body: JSON.stringify({
                         model: AI_CONFIG.model,
                         messages: [
-                            { role: "system", content: "Bạn là chuyên gia văn học. Hãy trả lời ngắn gọn bằng tiếng Việt, không dùng định dạng đặc biệt." },
+                            { role: "system", content: "Bạn chuyên gia văn học. Hãy trả lời ngắn gọn bằng tiếng Việt, không dùng định dạng đặc biệt." },
                             { role: "user", content: prompt }
                         ],
                         max_tokens: 300,
