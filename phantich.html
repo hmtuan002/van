@@ -3,24 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thi Thử Văn THPT - Hỗ Trợ Văn Học</title>
+    <title>Phân tích văn học - Hỗ Trợ Văn Học</title>
     <link rel="icon" href="icon-light.png" type="image/png" id="favicon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap" rel="stylesheet">
-    <!-- Firebase SDK (chỉ dùng Firestore, không dùng Auth) -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* ===== Reset & font (đồng bộ toàn site) ===== */
+        /* Reset và font chữ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
+        
         :root {
             --primary-color: #ff8c45;
             --secondary-color: #2c82c9;
@@ -33,18 +27,13 @@
             --footer-text: white;
             --gradient: linear-gradient(135deg, #ff8c45, #ff5722);
             --hero-gradient: linear-gradient(135deg, rgba(255, 140, 69, 0.85), rgba(44, 130, 201, 0.8));
-            --success: #2e9e5b;
-            --warning: #f59e0b;
-            --danger: #e74c3c;
-            --border-color: #e5e7eb;
-            --muted-bg: #f8fafc;
         }
-
+        
         .dark-mode {
             --primary-color: #80afd1;
             --secondary-color: #4caf50;
             --accent-color: #80afd1;
-            --bg-color: #000000;
+            --bg-color: #121212;
             --text-color: #f0f0f0;
             --card-bg: #1e1e1e;
             --shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -52,32 +41,22 @@
             --footer-text: #f0f0f0;
             --gradient: linear-gradient(135deg, #80afd1, #4caf50);
             --hero-gradient: linear-gradient(135deg, rgba(128, 175, 209, 0.85), rgba(76, 175, 80, 0.8));
-            --success: #4caf50;
-            --warning: #f0a93f;
-            --danger: #e57373;
-            --border-color: #2e2e2e;
-            --muted-bg: #161616;
         }
-
+        
         body {
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--bg-color);
             transition: all 0.4s ease;
         }
-
-        .container {
-            width: 90%;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        /* ===== Loading screen ===== */
+        
+        /* Loading Screen */
         .loading-screen {
             position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: var(--bg-color);
             display: flex;
             flex-direction: column;
@@ -86,19 +65,33 @@
             z-index: 9999;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-        .loading-screen.hidden { opacity: 0; visibility: hidden; }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+        
         .loader {
-            width: 60px; height: 60px;
+            width: 60px;
+            height: 60px;
             border: 4px solid rgba(255, 140, 69, 0.2);
             border-radius: 50%;
             border-top-color: var(--primary-color);
             animation: spin 1.2s ease-in-out infinite;
             margin-bottom: 20px;
         }
-        .loading-text { font-size: 1.2rem; color: var(--primary-color); font-weight: 500; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ===== Header / Nav (đồng bộ với toàn site) ===== */
+        
+        .loading-text {
+            font-size: 1.2rem;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Header */
         header {
             background-color: var(--bg-color);
             box-shadow: var(--shadow);
@@ -108,11 +101,20 @@
             z-index: 100;
             transition: all 0.4s ease;
         }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+        
         .logo {
             font-size: 1.6rem;
             font-weight: bold;
@@ -120,34 +122,100 @@
             display: flex;
             align-items: center;
         }
-        .logo-text { margin-left: 12px; transition: all 0.3s ease; }
-        .logo-icon { width: 32px; height: 32px; transition: transform 0.3s ease; }
-        .logo:hover .logo-icon { transform: rotate(15deg); }
-        .header-controls { display: flex; align-items: center; gap: 20px; }
-
-        .theme-switch { position: relative; display: inline-block; width: 60px; height: 30px; }
-        .theme-switch input { opacity: 0; width: 0; height: 0; }
+        
+        .logo-text {
+            margin-left: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            transition: transform 0.3s ease;
+        }
+        
+        .logo:hover .logo-icon {
+            transform: rotate(15deg);
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .theme-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .theme-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
         .slider {
-            position: absolute; cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 34px;
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
         }
+        
         .slider:before {
-            position: absolute; content: "";
-            height: 22px; width: 22px; left: 4px; bottom: 4px;
-            background-color: white; transition: .4s; border-radius: 50%;
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
         }
-        input:checked + .slider { background: var(--gradient); }
-        input:checked + .slider:before { transform: translateX(30px); }
+        
+        input:checked + .slider {
+            background: var(--gradient);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+        
         .slider-icons {
-            position: absolute; top: 50%; transform: translateY(-50%);
-            display: flex; justify-content: space-between; width: 100%;
-            padding: 0 8px; pointer-events: none;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 8px;
+            pointer-events: none;
         }
-        .slider-icons i { font-size: 14px; color: white; }
-
-        nav ul { display: flex; list-style: none; }
-        nav ul li { margin-left: 2rem; position: relative; }
+        
+        .slider-icons i {
+            font-size: 14px;
+            color: white;
+        }
+        
+        /* Navigation */
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+            position: relative;
+        }
+        
         nav ul li a {
             color: var(--text-color);
             text-decoration: none;
@@ -158,298 +226,498 @@
             padding: 8px 0;
             position: relative;
         }
-        nav ul li a:hover, nav ul li a.active { color: var(--primary-color); }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
         nav ul li a::after {
             content: '';
             position: absolute;
-            bottom: 0; left: 0;
-            width: 0; height: 2px;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
             background: var(--gradient);
             transition: width 0.3s ease;
         }
-        nav ul li a:hover::after, nav ul li a.active::after { width: 100%; }
-        nav ul li a i { margin-right: 8px; font-size: 1.1rem; }
-
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        nav ul li a i {
+            margin-right: 8px;
+            font-size: 1.1rem;
+        }
+        
         .menu-toggle {
             display: none;
             cursor: pointer;
             font-size: 1.5rem;
             color: var(--primary-color);
-            background: none;
-            border: none;
         }
-
+        
+        /* Analysis Tool Styles */
+        .analysis-tool {
+            padding: 3rem 0;
+            background-color: var(--bg-color);
+        }
+        
+        .analysis-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.4s ease;
+            margin-bottom: 2rem;
+        }
+        
+        .analysis-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            text-align: center;
+        }
+        
+        .input-area {
+            margin-bottom: 2rem;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 140, 69, 0.2);
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .analyze-btn {
+            flex: 2;
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .analyze-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transition: all 0.5s;
+            z-index: -1;
+        }
+        
+        .analyze-btn:hover::before {
+            width: 100%;
+        }
+        
+        .analyze-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .analyze-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .analyze-btn:disabled:hover::before {
+            width: 0%;
+        }
+        
+        .settings-btn {
+            flex: 1;
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .settings-btn:hover {
+            background: rgba(255, 140, 69, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .settings-panel {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            display: none;
+        }
+        
+        .settings-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .option-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .option-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .option-card p {
+            color: var(--text-color);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .toggle-label {
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .select-container {
+            margin-bottom: 1rem;
+        }
+        
+        .select-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        select {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255, 140, 69, 0.2);
+        }
+        
+        .result-area {
+            margin-top: 2rem;
+        }
+        
+        .analysis-section {
+            background-color: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .analysis-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .analysis-section h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .analysis-section h3 i {
+            margin-right: 0.5rem;
+        }
+        
+        .analysis-content {
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+        
+        .analysis-content strong {
+            color: var(--primary-color);
+        }
+        
+        .tone-markers {
+            font-family: monospace;
+            font-weight: bold;
+        }
+        
+        .tone-T {
+            color: #ef4444;
+        }
+        
+        .tone-B {
+            color: #10b981;
+        }
+        
+        .law-result {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-top: 0.5rem;
+        }
+        
+        .progress-container {
+            margin-top: 2rem;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .progress-status {
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: var(--gradient);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+        
+        .progress-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 0.5rem;
+        }
+        
+        .progress-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: var(--text-color);
+        }
+        
+        .progress-item i {
+            margin-right: 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .progress-item.completed {
+            color: var(--secondary-color);
+        }
+        
+        .progress-item.pending {
+            color: #9ca3af;
+        }
+        
+        .progress-item.error {
+            color: #ef4444;
+        }
+        
+        /* Responsive Design */
         @media (max-width: 768px) {
-            .menu-toggle { display: block; }
+            .menu-toggle {
+                display: block;
+            }
+            
             nav {
                 position: absolute;
-                top: 70px; left: 0; width: 100%;
+                top: 70px;
+                left: 0;
+                width: 100%;
                 background-color: var(--bg-color);
                 padding: 1rem;
                 box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
                 display: none;
                 border-radius: 0 0 10px 10px;
             }
-            nav.active { display: block; }
-            nav ul { flex-direction: column; }
-            nav ul li { margin: 0.8rem 0; }
-            .logo-text { display: none; }
+            
+            nav.active {
+                display: block;
+            }
+            
+            nav ul {
+                flex-direction: column;
+            }
+            
+            nav ul li {
+                margin: 0.8rem 0;
+            }
+            
+            .analysis-card {
+                padding: 1.5rem;
+            }
+            
+            .options-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .header-controls {
+                gap: 15px;
+            }
+            
+            .theme-switch {
+                width: 50px;
+                height: 26px;
+            }
+            
+            .slider:before {
+                height: 18px;
+                width: 18px;
+            }
+            
+            input:checked + .slider:before {
+                transform: translateX(24px);
+            }
+            
+            /* Ẩn chữ "Hỗ Trợ Văn Học" trên thanh menu khi màn hình nhỏ */
+            .logo-text {
+                display: none;
+            }
         }
-
-        /* ===== Page title band ===== */
-        .page-title-band {
-            background: var(--hero-gradient);
-            color: white;
-            padding: 2.5rem 0;
-            text-align: center;
-        }
-        .page-title-band h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-        .page-title-band p { opacity: 0.95; }
-
-        /* ===== Exam UI ===== */
-        main { padding: 2.5rem 0 4rem; }
-
-        .exam-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .question-card {
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            border-left: 4px solid var(--primary-color);
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            position: relative;
-            padding-bottom: 8px;
-            margin-bottom: 1.5rem;
-            font-weight: 700;
-            color: var(--text-color);
-            font-size: 1.3rem;
-        }
-        .section-title::after {
-            content: '';
-            position: absolute;
-            left: 0; bottom: 0;
-            width: 50px; height: 3px;
-            background: var(--gradient);
-            border-radius: 3px;
-        }
-
-        .btn-primary {
-            background: var(--gradient);
-            color: white;
-            padding: 0.8rem 1.8rem;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 140, 69, 0.25);
-        }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255, 140, 69, 0.35); }
-        .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
-
-        .btn-secondary {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 0.8rem 1.8rem;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(44, 130, 201, 0.25);
-        }
-        .btn-secondary:hover { transform: translateY(-2px); }
-
-        .answer-input {
-            min-height: 100px;
-            width: 100%;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 0.5rem;
-            transition: all 0.3s ease;
-            font-family: 'Noto Serif', serif;
-            resize: vertical;
-        }
-        .answer-input:focus { border-color: var(--primary-color); outline: none; }
-
-        .timer-container {
-            background-color: var(--card-bg);
-            border-radius: 50px;
-            box-shadow: var(--shadow);
-            padding: 0.5rem 1.2rem;
-        }
-        .timer { font-family: 'Courier New', monospace; font-weight: bold; color: var(--primary-color); font-size: 1.1rem; }
-        .timer-warning { color: var(--warning); animation: pulse 1s infinite; }
-        .timer-danger { color: var(--danger); animation: pulse 0.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
-
-        .reading-passage {
-            font-family: 'Noto Serif', serif;
-            font-style: italic;
-            background-color: var(--muted-bg);
-            padding: 1.2rem;
-            border-radius: 8px;
-            margin-bottom: 1.5rem;
-            color: var(--text-color);
-            white-space: pre-wrap;
-        }
-
-        .progress-bar { height: 8px; border-radius: 4px; background-color: var(--border-color); overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--gradient); transition: width 0.6s ease; }
-
-        .score-box {
-            background: var(--gradient);
-            color: white;
-            padding: 1.8rem;
-            border-radius: 14px;
-            box-shadow: var(--shadow);
-            text-align: center;
-            max-width: 420px;
-            margin: 0 auto 1.5rem;
-        }
-        .score-box .score-label { font-size: 0.85rem; opacity: 0.9; }
-        .score-box .score-value { font-size: 3rem; font-weight: 700; margin: 0.3rem 0; }
-
-        .result-card {
-            border-radius: 8px;
-            box-shadow: var(--shadow);
-            margin-bottom: 1.2rem;
-            overflow: hidden;
-        }
-        .result-header {
-            padding: 0.9rem 1.3rem;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .result-body { padding: 1.2rem 1.3rem; }
-        .result-good { border-left: 4px solid var(--success); }
-        .result-good .result-header { background-color: rgba(46, 158, 91, 0.12); color: var(--success); }
-        .result-medium { border-left: 4px solid var(--warning); }
-        .result-medium .result-header { background-color: rgba(245, 158, 11, 0.12); color: var(--warning); }
-        .result-low { border-left: 4px solid var(--danger); }
-        .result-low .result-header { background-color: rgba(231, 76, 60, 0.12); color: var(--danger); }
-        .result-card { background-color: var(--card-bg); }
-
-        .improvement-box {
-            background-color: var(--muted-bg);
-            border-radius: 8px;
-            padding: 0.7rem 1rem;
-            font-size: 0.9rem;
-            margin-top: 0.6rem;
-        }
-
-        .hidden-el { display: none !important; }
-
-        table.leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        table.leaderboard-table th, table.leaderboard-table td {
-            padding: 0.7rem 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-        table.leaderboard-table th {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            color: var(--text-color);
-            opacity: 0.7;
-        }
-        .rank-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px; height: 28px;
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 0.85rem;
-            background: var(--muted-bg);
-        }
-        .rank-1 { background: linear-gradient(135deg,#ffd700,#ffb300); color: #5a3d00; }
-        .rank-2 { background: linear-gradient(135deg,#e0e0e0,#bdbdbd); color: #333; }
-        .rank-3 { background: linear-gradient(135deg,#e6b27a,#c97f3e); color: #3a1f00; }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-        .info-box {
-            background-color: var(--muted-bg);
-            border-radius: 10px;
-            padding: 1.5rem;
-            border: 1px solid var(--border-color);
-        }
-        .info-box h3 { margin-bottom: 0.8rem; color: var(--text-color); display:flex; align-items:center; gap:0.5rem; }
-        .info-box h3 i { color: var(--primary-color); }
-        .info-box ul { list-style: none; font-size: 0.9rem; opacity: 0.85; }
-        .info-box ul li { margin-bottom: 0.4rem; display: flex; align-items: flex-start; gap: 0.5rem; }
-        .info-box ul li i { color: var(--primary-color); margin-top: 3px; font-size: 0.75rem; }
-
-        .floating-action-btn {
-            position: fixed;
-            bottom: 2rem; right: 2rem;
-            width: 55px; height: 55px;
-            border-radius: 50%;
-            background: var(--gradient);
-            color: white;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 100;
-        }
-        .floating-action-btn:hover { transform: translateY(-4px); }
-
-        /* ===== Name modal (max điểm) ===== */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.55);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1000;
-            padding: 1rem;
-        }
-        .modal-box {
-            background-color: var(--card-bg);
-            border-radius: 14px;
-            padding: 2rem;
-            max-width: 420px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
-        }
-        .modal-box i.fa-trophy { font-size: 2.5rem; color: #ffb300; margin-bottom: 0.8rem; }
-        .modal-box input {
-            width: 100%;
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 1rem 0;
-            font-size: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            .info-grid { grid-template-columns: 1fr; }
-            .floating-action-btn { bottom: 1rem; right: 1rem; width: 48px; height: 48px; }
+        
+        @media (max-width: 480px) {
+            .analysis-tool {
+                padding: 2rem 0;
+            }
+            
+            .progress-items {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -457,10 +725,10 @@
     <!-- Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
         <div class="loader"></div>
-        <div class="loading-text">Đang tải Thi Thử Văn Học...</div>
+        <div class="loading-text">Đang tải Hỗ Trợ Văn Học...</div>
     </div>
-
-    <!-- Header với navigation (đồng bộ toàn site) -->
+    
+    <!-- Header với navigation -->
     <header>
         <div class="container">
             <div class="header-content">
@@ -477,207 +745,126 @@
                             <i class="fas fa-moon"></i>
                         </div>
                     </label>
-                    <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+                    <div class="menu-toggle"><i class="fas fa-bars"></i></div>
                 </div>
                 <nav id="main-nav">
                     <ul>
                         <li><a href="index.html"><i class="fas fa-home"></i>Trang chủ</a></li>
-                        <li><a href="phantich.html"><i class="fas fa-pen-fancy"></i>Phân tích văn học</a></li>
+                        <li><a href="phantich.html" class="active"><i class="fas fa-pen-fancy"></i>Phân tích văn học</a></li>
                         <li><a href="bando.html"><i class="fas fa-map-marked-alt"></i>Bản đồ</a></li>
                         <li><a href="chatbot.html"><i class="fas fa-robot"></i>Chatbot AI</a></li>
-                        <li><a href="thithu.html" class="active"><i class="fas fa-edit"></i>Thi thử</a></li>
+                        <li><a href="thithu.html"><i class="fas fa-edit"></i>Thi thử</a></li>
                     </ul>
                 </nav>
             </div>
         </div>
     </header>
-
-    <!-- Page title -->
-    <section class="page-title-band">
+    
+    <!-- Analysis Tool -->
+    <section class="analysis-tool">
         <div class="container">
-            <h1><i class="fas fa-graduation-cap"></i> Thi Thử Văn THPT Quốc Gia</h1>
-            <p>Làm đề thi thật do giáo viên biên soạn - chấm điểm tự động bằng AI</p>
+            <div class="analysis-card">
+                <h2>Phân tích văn học</h2>
+                
+                <!-- Input Area -->
+                <div class="input-area">
+                    <textarea id="inputText" placeholder="Nhập nội dung văn bản cần phân tích..."></textarea>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button id="analyzeBtn" class="analyze-btn">
+                        <i class="fas fa-search mr-2"></i> Bắt đầu phân tích
+                    </button>
+                    <button id="settingsBtn" class="settings-btn">
+                        <i class="fas fa-cog"></i>
+                    </button>
+                </div>
+                
+                <!-- Settings Panel -->
+                <div class="settings-panel" id="settingsPanel">
+                    <div class="options-grid">
+                        <div class="option-card">
+                            <h3>Phân tích máy</h3>
+                            <p>Tự động phân tích bằng thuật toán hoặc sử dụng AI cho tất cả các phần</p>
+                            <div class="toggle-container">
+                                <span class="toggle-label">Sử dụng AI toàn phần</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="aiFullToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="option-card">
+                            <h3>Chế độ phân tích</h3>
+                            <p>Chọn mức độ chi tiết và tốc độ phân tích</p>
+                            <div class="select-container">
+                                <label for="analysisMode">Chế độ:</label>
+                                <select id="analysisMode">
+                                    <option value="fast">Phân tích nhanh</option>
+                                    <option value="normal" selected>Phân tích trung bình</option>
+                                    <option value="deep">Phân tích kỹ càng</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="option-card">
+                            <h3>Tùy chọn bổ sung</h3>
+                            <p>Các tùy chọn nâng cao cho phân tích chi tiết</p>
+                            <div class="toggle-container">
+                                <span class="toggle-label">Phân tích ngữ âm</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="phoneticToggle" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="toggle-container">
+                                <span class="toggle-label">So sánh với tác phẩm khác</span>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="comparisonToggle">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Progress Area -->
+                <div class="progress-container" id="progressContainer" style="display: none;">
+                    <div class="progress-header">
+                        <div class="progress-title">Tiến trình phân tích</div>
+                        <div class="progress-status" id="progressStatus">Đang xử lý...</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                    </div>
+                    <div class="progress-items" id="progressItems">
+                        <!-- Progress items will be added here dynamically -->
+                    </div>
+                </div>
+                
+                <!-- Result Area -->
+                <div class="result-area" id="result"></div>
+            </div>
         </div>
     </section>
-
-    <!-- Main Content -->
-    <main class="container">
-        <!-- Start Screen -->
-        <div id="start-screen">
-            <div class="exam-card" style="text-align:center;">
-                <p style="margin-bottom:1.5rem; opacity:0.85;">Không cần đăng nhập - cứ làm bài thoải mái! Nếu đạt điểm tối đa (10/10), bạn sẽ được nhập tên để lưu vào Bảng Xếp Hạng.</p>
-
-                <div class="info-grid">
-                    <div class="info-box">
-                        <h3><i class="fas fa-book-reader"></i> Đọc hiểu (4 điểm)</h3>
-                        <ul>
-                            <li><i class="fas fa-check-circle"></i><span>Đoạn văn/đoạn thơ kèm các câu hỏi đọc hiểu</span></li>
-                            <li><i class="fas fa-check-circle"></i><span>Đề và đáp án do quản trị viên biên soạn sẵn</span></li>
-                            <li><i class="fas fa-check-circle"></i><span>AI chấm dựa trên đáp án/barem chuẩn</span></li>
-                        </ul>
-                    </div>
-                    <div class="info-box">
-                        <h3><i class="fas fa-pen-nib"></i> Làm văn (6 điểm)</h3>
-                        <ul>
-                            <li><i class="fas fa-check-circle"></i><span>Câu 1: Đoạn văn nghị luận xã hội (2 điểm)</span></li>
-                            <li><i class="fas fa-check-circle"></i><span>Câu 2: Bài văn nghị luận văn học (4 điểm)</span></li>
-                            <li><i class="fas fa-check-circle"></i><span>AI chấm theo tiêu chí chấm của đề</span></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div style="background-color:var(--muted-bg); padding:1rem; border-radius:10px; margin-bottom:2rem; display:flex; justify-content:center; gap:1.5rem; flex-wrap:wrap;">
-                    <span><i class="fas fa-clock" style="color:var(--primary-color);"></i> Thời gian: <strong>120 phút</strong></span>
-                    <span><i class="fas fa-robot" style="color:var(--primary-color);"></i> Chấm điểm bằng AI</span>
-                </div>
-
-                <button id="start-exam-btn" class="btn-primary">
-                    <i class="fas fa-play"></i> Bắt đầu thi
-                </button>
-                <p id="no-exam-msg" class="hidden-el" style="margin-top:1rem; color:var(--danger);">Hiện chưa có đề thi nào trong hệ thống. Vui lòng quay lại sau!</p>
-            </div>
-
-            <!-- Bảng xếp hạng -->
-            <div class="exam-card" id="leaderboard-section">
-                <h3 class="section-title"><i class="fas fa-trophy"></i> Bảng Xếp Hạng (Điểm 10 tuyệt đối)</h3>
-                <div style="overflow-x:auto;">
-                    <table class="leaderboard-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Họ và tên</th>
-                                <th>Đề thi</th>
-                                <th>Thời gian</th>
-                            </tr>
-                        </thead>
-                        <tbody id="leaderboard-body">
-                            <tr><td colspan="4" style="text-align:center; padding:1.5rem;">Đang tải...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Exam Screen -->
-        <div id="exam-screen" class="hidden-el">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; flex-wrap:wrap; gap:1rem;">
-                <div>
-                    <h2 style="font-size:1.3rem; font-weight:700;" id="exam-title-display">ĐỀ THI THỬ MÔN NGỮ VĂN</h2>
-                    <p style="font-size:0.85rem; opacity:0.7;">Thời gian làm bài: 120 phút</p>
-                </div>
-                <div class="timer-container">
-                    <i class="fas fa-clock" style="color:var(--primary-color);"></i>
-                    <span id="timer" class="timer">120:00</span>
-                </div>
-            </div>
-
-            <div class="exam-card">
-                <h3 class="section-title">I. ĐỌC HIỂU (4.0 điểm)</h3>
-                <div id="reading-passage" class="reading-passage"></div>
-                <div id="reading-questions"></div>
-            </div>
-
-            <div class="exam-card">
-                <h3 class="section-title">II. LÀM VĂN (6.0 điểm)</h3>
-                <div class="question-card">
-                    <p style="font-weight:700; margin-bottom:0.4rem;"><span style="color:var(--primary-color);">Câu 1 (2.0 điểm):</span> <span id="writing-task-1"></span></p>
-                    <textarea id="answer-1" class="answer-input" placeholder="Nhập câu trả lời của bạn..."></textarea>
-                    <div style="font-size:0.78rem; opacity:0.65; margin-top:0.3rem;">Gợi ý: Viết đoạn văn khoảng 200 chữ</div>
-                </div>
-                <div class="question-card">
-                    <p style="font-weight:700; margin-bottom:0.4rem;"><span style="color:var(--primary-color);">Câu 2 (4.0 điểm):</span> <span id="writing-task-2"></span></p>
-                    <textarea id="answer-2" class="answer-input" style="min-height:200px;" placeholder="Nhập câu trả lời của bạn..."></textarea>
-                    <div style="font-size:0.78rem; opacity:0.65; margin-top:0.3rem;">Gợi ý: Viết bài văn đầy đủ 3 phần (mở bài, thân bài, kết bài)</div>
-                </div>
-            </div>
-
-            <div style="display:flex; justify-content:center; margin-top:2rem;">
-                <button id="submit-exam-btn" class="btn-primary"><i class="fas fa-paper-plane"></i> Nộp bài</button>
-            </div>
-        </div>
-
-        <!-- Result Screen -->
-        <div id="result-screen" class="hidden-el">
-            <div class="exam-card" style="text-align:center;">
-                <i class="fas fa-award" style="font-size:2.5rem; color:var(--primary-color); margin-bottom:1rem;"></i>
-                <h2 style="font-size:1.6rem; font-weight:700; margin-bottom:0.5rem;">KẾT QUẢ BÀI THI</h2>
-                <p style="opacity:0.7; margin-bottom:1.5rem;">Đây là kết quả bài làm của bạn cùng nhận xét chi tiết từ AI</p>
-
-                <div class="score-box">
-                    <div class="score-label">TỔNG ĐIỂM</div>
-                    <div id="total-score" class="score-value">0.0</div>
-                    <div id="score-feedback" style="font-size:0.9rem;"></div>
-                    <div class="progress-bar" style="margin-top:1rem; background-color:rgba(255,255,255,0.3);">
-                        <div id="score-progress" class="progress-fill" style="background:white; width:0%;"></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="exam-card">
-                <h3 class="section-title">ĐÁNH GIÁ CHI TIẾT</h3>
-                <div id="reading-results" style="margin-bottom:2rem;">
-                    <h4 style="font-weight:700; margin-bottom:1rem;">I. Đọc hiểu (4.0 điểm)</h4>
-                    <div id="reading-feedback"></div>
-                </div>
-                <div id="writing-results">
-                    <h4 style="font-weight:700; margin-bottom:1rem;">II. Làm văn (6.0 điểm)</h4>
-                    <p style="font-weight:600; opacity:0.8; margin-bottom:0.6rem;">Câu 1: Viết đoạn văn (2.0 điểm)</p>
-                    <div id="writing-1-feedback" class="result-card">
-                        <div class="result-header">
-                            <span>Điểm số</span>
-                            <span id="writing-1-score" class="font-bold">0.0/2.0</span>
-                        </div>
-                        <div class="result-body">
-                            <div id="writing-1-comment" style="margin-bottom:0.6rem;"></div>
-                            <div id="writing-1-improvement" class="improvement-box"></div>
-                        </div>
-                    </div>
-                    <p style="font-weight:600; opacity:0.8; margin:1.2rem 0 0.6rem;">Câu 2: Viết bài văn (4.0 điểm)</p>
-                    <div id="writing-2-feedback" class="result-card">
-                        <div class="result-header">
-                            <span>Điểm số</span>
-                            <span id="writing-2-score" class="font-bold">0.0/4.0</span>
-                        </div>
-                        <div class="result-body">
-                            <div id="writing-2-comment" style="margin-bottom:0.6rem;"></div>
-                            <div id="writing-2-improvement" class="improvement-box"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap;">
-                <button id="retry-btn" class="btn-primary"><i class="fas fa-redo"></i> Làm lại</button>
-                <button id="new-exam-btn" class="btn-secondary"><i class="fas fa-file-alt"></i> Đề mới</button>
-            </div>
-        </div>
-    </main>
-
-    <!-- Name modal khi đạt 10 điểm -->
-    <div id="name-modal" class="modal-overlay hidden-el">
-        <div class="modal-box">
-            <i class="fas fa-trophy"></i>
-            <h2 style="font-weight:700; margin-bottom:0.3rem;">Chúc mừng! Điểm 10 tuyệt đối!</h2>
-            <p style="opacity:0.8; font-size:0.9rem;">Nhập tên của bạn để lưu vào Bảng Xếp Hạng nhé!</p>
-            <input type="text" id="leaderboard-name-input" placeholder="Nhập họ và tên..." maxlength="40">
-            <div style="display:flex; gap:0.7rem; justify-content:center;">
-                <button id="save-leaderboard-btn" class="btn-primary">Lưu tên</button>
-                <button id="skip-leaderboard-btn" class="btn-secondary" style="background-color:var(--gray, #94a3b8);">Bỏ qua</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Floating Action Button -->
-    <div id="fab" class="floating-action-btn hidden-el">
-        <i class="fas fa-arrow-up"></i>
-    </div>
-
+    
+    <!-- JavaScript -->
     <script>
-        /* ===== Theme toggle (đồng bộ toàn site) ===== */
+        // Loading Screen
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1200);
+        });
+        
+        // Theme Toggle
         const themeToggle = document.getElementById('themeToggle');
         const favicon = document.getElementById('favicon');
         const logoIcon = document.getElementById('logoIcon');
-
+        
+        // Kiểm tra theme đã lưu trong localStorage
         const savedTheme = localStorage.getItem('theme');
         if (savedTheme === 'dark') {
             document.body.classList.add('dark-mode');
@@ -688,8 +875,8 @@
             favicon.href = 'icon-light.png';
             logoIcon.src = 'icon-light.png';
         }
-
-        themeToggle.addEventListener('change', function () {
+        
+        themeToggle.addEventListener('change', function() {
             if (this.checked) {
                 document.body.classList.add('dark-mode');
                 localStorage.setItem('theme', 'dark');
@@ -702,36 +889,26 @@
                 logoIcon.src = 'icon-light.png';
             }
         });
-
-        document.querySelector('.menu-toggle').addEventListener('click', function () {
+        
+        // Menu toggle for mobile
+        document.querySelector('.menu-toggle').addEventListener('click', function() {
             document.getElementById('main-nav').classList.toggle('active');
         });
-        document.querySelectorAll('nav ul li a').forEach(link => {
-            link.addEventListener('click', function () {
+        
+        // Close menu when clicking on a link (for mobile)
+        const navLinks = document.querySelectorAll('nav ul li a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
                 document.getElementById('main-nav').classList.remove('active');
             });
         });
-
-        window.addEventListener('load', function () {
-            setTimeout(function () {
-                document.getElementById('loadingScreen').classList.add('hidden');
-            }, 800);
+        
+        // Settings Panel Toggle
+        document.getElementById('settingsBtn').addEventListener('click', function() {
+            document.getElementById('settingsPanel').classList.toggle('active');
         });
-
-        /* ===== Firebase (chỉ Firestore, không Auth) ===== */
-        const firebaseConfig = {
-            apiKey: "AIzaSyAu4xlTa51eZrb9b2xhWKkbOv-L8gpPDPg",
-            authDomain: "xta-tl.firebaseapp.com",
-            projectId: "xta-tl",
-            storageBucket: "xta-tl.firebasestorage.app",
-            messagingSenderId: "1049275322449",
-            appId: "1:1049275322449:web:9ad1ed1986bb1712942870",
-            measurementId: "G-MC2V2CK2XF"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-
-        /* ===== AI config (giống chatbot - gpt-5-nano) ===== */
+        
+        // Analysis Tool JavaScript
         const _rk = "e64bff205b1bbec5c6e8469068e508504eee3e3687920514-ks";
         const AI_CONFIG = {
             get apiKey() { return _rk.split('').reverse().join(''); },
@@ -739,407 +916,1093 @@
             model: "gpt-5-nano"
         };
 
-        async function callAI(messages) {
-            const response = await fetch(AI_CONFIG.endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${AI_CONFIG.apiKey}`
-                },
-                body: JSON.stringify({
-                    model: AI_CONFIG.model,
-                    messages: messages,
-                    max_tokens: 2500,
-                    temperature: 0.3
-                })
-            });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            const data = await response.json();
-            return data.choices[0].message.content.trim();
+        // Biến toàn cục để theo dõi tiến trình
+        let analysisProgress = {
+            total: 0,
+            completed: 0,
+            items: []
+        };
+
+        // Hàm cập nhật tiến trình
+        function updateProgress() {
+            const progressFill = document.getElementById('progressFill');
+            const progressStatus = document.getElementById('progressStatus');
+            const progressItems = document.getElementById('progressItems');
+            
+            // Tính phần trăm hoàn thành
+            const percent = analysisProgress.total > 0 ? 
+                Math.round((analysisProgress.completed / analysisProgress.total) * 100) : 0;
+            
+            // Cập nhật thanh tiến trình
+            progressFill.style.width = `${percent}%`;
+            
+            // Cập nhật trạng thái
+            if (percent === 100) {
+                progressStatus.textContent = 'Hoàn thành!';
+            } else {
+                progressStatus.textContent = `Đang xử lý... ${percent}%`;
+            }
+            
+            // Cập nhật các mục tiến trình
+            progressItems.innerHTML = analysisProgress.items.map(item => {
+                let iconClass = 'fas fa-clock';
+                let statusClass = 'pending';
+                
+                if (item.status === 'completed') {
+                    iconClass = 'fas fa-check-circle';
+                    statusClass = 'completed';
+                } else if (item.status === 'error') {
+                    iconClass = 'fas fa-exclamation-circle';
+                    statusClass = 'error';
+                }
+                
+                return `
+                    <div class="progress-item ${statusClass}">
+                        <i class="${iconClass}"></i>
+                        ${item.name}
+                    </div>
+                `;
+            }).join('');
         }
 
-        /* ===== DOM ===== */
-        const startScreen = document.getElementById('start-screen');
-        const examScreen = document.getElementById('exam-screen');
-        const resultScreen = document.getElementById('result-screen');
-        const startExamBtn = document.getElementById('start-exam-btn');
-        const submitExamBtn = document.getElementById('submit-exam-btn');
-        const retryBtn = document.getElementById('retry-btn');
-        const newExamBtn = document.getElementById('new-exam-btn');
-        const timer = document.getElementById('timer');
-        const fab = document.getElementById('fab');
-        const noExamMsg = document.getElementById('no-exam-msg');
+        // Hàm thêm mục vào tiến trình
+        function addProgressItem(name) {
+            analysisProgress.items.push({
+                name: name,
+                status: 'pending'
+            });
+            analysisProgress.total++;
+            updateProgress();
+        }
 
-        let examData = null;     // dữ liệu đề (đã ẩn phần đáp án/barem khỏi UI nhưng vẫn giữ trong biến)
-        let timeLeft = 120 * 60;
-        let timerInterval = null;
-        let userAnswers = {};
+        // Hàm đánh dấu mục hoàn thành
+        function completeProgressItem(index) {
+            analysisProgress.items[index].status = 'completed';
+            analysisProgress.completed++;
+            updateProgress();
+        }
 
-        /* ===== Tải bảng xếp hạng ===== */
-        function loadLeaderboard() {
-            const body = document.getElementById('leaderboard-body');
-            db.collection('leaderboard')
-                .orderBy('timestamp', 'desc')
-                .limit(20)
-                .get()
-                .then(snapshot => {
-                    if (snapshot.empty) {
-                        body.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem;">Chưa có ai đạt điểm 10 tuyệt đối. Hãy là người đầu tiên!</td></tr>';
-                        return;
+        // Hàm đánh dấu mục lỗi
+        function errorProgressItem(index) {
+            analysisProgress.items[index].status = 'error';
+            analysisProgress.completed++;
+            updateProgress();
+        }
+
+        // Hàm đếm từ
+        function countWords(text) {
+            return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+        }
+
+        // Hàm parse markdown
+        function parseMarkdown(text) {
+            return text
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\n/g, '<br>');
+        }
+
+        // Hàm xác định nhân vật trữ tình
+        function xacDinhNhanVatTruTinh(baiTho) {
+            let tuTrongBaiTho = baiTho.split(/\s+/);
+            
+            if (tuTrongBaiTho.includes("tôi") || tuTrongBaiTho.includes("Tôi")) {
+                return "Nhân vật trữ tình là: Tôi";
+            }
+            if (tuTrongBaiTho.includes("cha")) {
+                return "Nhân vật trữ tình là: Cha";
+            }
+            
+            let tuDauCau = baiTho.split('\n').map(cau => cau.trim().split(/\s+/)[0]);
+            let tuCanTim = ["Anh", "Em", "Con", "Cháu", "Ta", "anh", "em", "con", "cháu", "ta"];
+            let demTu = {};
+            
+            tuDauCau.forEach(tu => {
+                if (tuCanTim.includes(tu)) {
+                    demTu[tu] = (demTu[tu] || 0) + 1;
+                }
+            });
+            
+            let nhanVatTruTinh = "Tác giả";
+            let maxXuatHien = 0;
+            
+            for (let tu in demTu) {
+                if (demTu[tu] > maxXuatHien) {
+                    maxXuatHien = demTu[tu];
+                    nhanVatTruTinh = tu;
+                }
+            }
+            
+            return "Nhân vật trữ tình là: " + nhanVatTruTinh;
+        }
+
+        // Hàm loại bỏ dấu tiếng Việt
+        function removeVietnameseAccents(str) {
+            const accentMap = {
+                'á': 'a', 'à': 'a', 'ả': 'a', 'ã': 'a', 'ạ': 'a',
+                'â': 'a', 'ầ': 'a', 'ấ': 'a', 'ẩ': 'a', 'ẫ': 'a', 'ậ': 'a',
+                'ă': 'a', 'ằ': 'a', 'ắ': 'a', 'ẳ': 'a', 'ẵ': 'a', 'ặ': 'a',
+                'é': 'e', 'è': 'e', 'ẻ': 'e', 'ẽ': 'e', 'ẹ': 'e',
+                'ê': 'e', 'ế': 'e', 'ề': 'e', 'ể': 'e', 'ễ': 'e', 'ệ': 'e',
+                'í': 'i', 'ì': 'i', 'ỉ': 'i', 'ĩ': 'i', 'ị': 'i',
+                'ó': 'o', 'ò': 'o', 'ỏ': 'o', 'õ': 'o', 'ọ': 'o',
+                'ô': 'o', 'ố': 'o', 'ồ': 'o', 'ổ': 'o', 'ỗ': 'o', 'ộ': 'o',
+                'ơ': 'o', 'ớ': 'o', 'ờ': 'o', 'ở': 'o', 'ỡ': 'o', 'ợ': 'o',
+                'ú': 'u', 'ù': 'u', 'ủ': 'u', 'ũ': 'u', 'ụ': 'u',
+                'ư': 'u', 'ứ': 'u', 'ừ': 'u', 'ử': 'u', 'ữ': 'u', 'ự': 'u',
+                'ý': 'y', 'ỳ': 'y', 'ỷ': 'y', 'ỹ': 'y', 'ỵ': 'y',
+            };
+            return str.split('').map(c => accentMap[c] || c).join('');
+        }
+
+        // Hàm loại bỏ dấu câu
+        function removePunctuation(str) {
+            return str.replace(/[.,'!?)(}{|:;><~`@#$%^&*-_+=]/g, '');
+        }
+
+        // Các mẫu vần
+        const rhymePatterns = [
+            "iêu", "an", "ang", "o", "a", "on", "ôn", "ôi", "oa", "ao", "i", "u", "e", "ê", "uê", "y", "un",
+            "oc", "ot", "iêu", "on", "ie", "ư", "ưn", "uy", "am", "ap", "em", "ep", "im", "ip", "um", "up",
+            "ic", "oc", "it", "ot", "ut", "inh", "ang", "ong", "ing", "ong", "oi", "em", "ep", "im", "ip",
+            "um", "up", "it", "ut", "ic", "oc", "ông", "ung", "ing", "eu", "au", "uy", "uan", "ơp", "op",
+            "ân", "ă", "ê", "ơ", "ai", "iê", "ia", "ua", "ay", "ơi", "ua", "ie", "iu", "ơm", "au", "â", "ô",
+            "ư", "i", "y", "ai", "eo", "êu", "ui", "ung", "inh", "ieu", "oay", "at", "ac", "enh", "en", "uoc"
+        ];
+
+        // Hàm lấy vần cuối
+        function getLastRhyme(word) {
+            const wordWithoutAccents = removeVietnameseAccents(removePunctuation(word)).toLowerCase();
+
+            const sortedRhymePatterns = rhymePatterns.sort((a, b) => {
+                if (b.length !== a.length) {
+                    return b.length - a.length;
+                }
+                return rhymePatterns.indexOf(a) - rhymePatterns.indexOf(b);
+            });
+
+            for (let rhyme of sortedRhymePatterns) {
+                if (wordWithoutAccents.endsWith(rhyme)) {
+                    return rhyme;
+                }
+            }
+
+            return wordWithoutAccents.charAt(wordWithoutAccents.length - 1);
+        }
+
+        // Hàm phân tích vần và thanh điệu
+        function analyzeRhymeAndTone(poem) {
+            const lines = poem.split(/\n+/).filter(line => line.trim() !== '');
+            let resultHtml = '';
+            
+            // Phân tích vần
+            const rhymeAnalysis = {};
+            lines.forEach((line, index) => {
+                const words = line.split(' ').filter(word => word.length > 0);
+                const lowerCaseWords = words.map(word => word.toLowerCase());
+
+                if (lowerCaseWords.length === 4) {
+                    const secondWord = removePunctuation(lowerCaseWords[1]);
+                    const secondRhyme = getLastRhyme(secondWord);
+                    if (secondRhyme && secondRhyme !== '') {
+                        if (!rhymeAnalysis[secondRhyme]) {
+                            rhymeAnalysis[secondRhyme] = [];
+                        }
+                        rhymeAnalysis[secondRhyme].push({ word: words[1], line: index + 1, type: 'second' });
                     }
-                    body.innerHTML = '';
-                    let rank = 0;
-                    snapshot.forEach(doc => {
-                        rank++;
-                        const d = doc.data();
-                        const date = d.timestamp ? d.timestamp.toDate() : new Date();
-                        const dateStr = date.toLocaleDateString('vi-VN') + ' ' + date.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-                        let rankClass = 'rank-badge';
-                        if (rank === 1) rankClass += ' rank-1';
-                        else if (rank === 2) rankClass += ' rank-2';
-                        else if (rank === 3) rankClass += ' rank-3';
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td><span class="${rankClass}">${rank}</span></td>
-                            <td style="font-weight:600;">${escapeHtml(d.name || 'Ẩn danh')}</td>
-                            <td style="font-size:0.85rem; opacity:0.75;">${escapeHtml(d.examTitle || 'Đề thi')}</td>
-                            <td style="font-size:0.85rem; opacity:0.75;">${dateStr}</td>
-                        `;
-                        body.appendChild(row);
+
+                    const lastWord = removePunctuation(lowerCaseWords[3]);
+                    const lastRhyme = getLastRhyme(lastWord);
+                    if (lastRhyme && lastRhyme !== '') {
+                        if (!rhymeAnalysis[lastRhyme]) {
+                            rhymeAnalysis[lastRhyme] = [];
+                        }
+                        rhymeAnalysis[lastRhyme].push({ word: words[3], line: index + 1, type: 'last' });
+                    }
+                }
+                else {
+                    if (lowerCaseWords.length === 7) {
+                        const fifthWord = removePunctuation(lowerCaseWords[4]);
+                        const fifthRhyme = getLastRhyme(fifthWord);
+                        if (fifthRhyme && fifthRhyme !== '') {
+                            if (!rhymeAnalysis[fifthRhyme]) {
+                                rhymeAnalysis[fifthRhyme] = [];
+                            }
+                            rhymeAnalysis[fifthRhyme].push({ word: words[4], line: index + 1, type: 'fifth' });
+                        }
+                    }
+
+                    if (lowerCaseWords.length === 8) {
+                        const fourthWord = removePunctuation(lowerCaseWords[3]);
+                        const fourthRhyme = getLastRhyme(fourthWord);
+                        if (fourthRhyme && fourthRhyme !== '') {
+                            if (!rhymeAnalysis[fourthRhyme]) {
+                                rhymeAnalysis[fourthRhyme] = [];
+                            }
+                            rhymeAnalysis[fourthRhyme].push({ word: words[3], line: index + 1, type: 'fourth' });
+                        }
+
+                        const sixthWord = removePunctuation(lowerCaseWords[5]);
+                        const sixthRhyme = getLastRhyme(sixthWord);
+                        if (sixthRhyme && sixthRhyme !== '') {
+                            if (!rhymeAnalysis[sixthRhyme]) {
+                                rhymeAnalysis[sixthRhyme] = [];
+                            }
+                            rhymeAnalysis[sixthRhyme].push({ word: words[5], line: index + 1, type: 'sixth' });
+                        }
+                    }
+
+                    const lastWord = removePunctuation(lowerCaseWords[lowerCaseWords.length - 1]);
+                    const lastRhyme = getLastRhyme(lastWord);
+                    if (lastRhyme && lastRhyme !== '') {
+                        if (!rhymeAnalysis[lastRhyme]) {
+                            rhymeAnalysis[lastRhyme] = [];
+                        }
+                        rhymeAnalysis[lastRhyme].push({ word: words[words.length - 1], line: index + 1, type: 'last' });
+                    }
+                }
+            });
+
+            let rhymeResultHtml = '<div class="analysis-section"><h3 class="text-lg font-semibold text-gray-800 mb-2 flex items-center"><i class="fas fa-music mr-2"></i> Phân tích vần điệu</h3>';
+            let foundRhyme = false;
+
+            for (const rhyme in rhymeAnalysis) {
+                if (rhymeAnalysis[rhyme].length > 1) {
+                    foundRhyme = true;
+                    rhymeResultHtml += `<p class="font-medium text-gray-700 mt-2">Vần <span class="font-bold">"${rhyme}"</span>:</p><ul class="list-disc pl-5">`;
+                    rhymeAnalysis[rhyme].forEach(item => {
+                        let wordType = item.type === 'last' ? 'từ cuối' : 
+                                      item.type === 'sixth' ? 'từ thứ 6' : 
+                                      item.type === 'fourth' ? 'từ thứ 4' : 
+                                      item.type === 'fifth' ? 'từ thứ 5' : 'từ thứ 2';
+                        rhymeResultHtml += `<li class="text-gray-600">Từ <span class="font-medium">"${item.word}"</span> ở dòng ${item.line} (${wordType})</li>`;
                     });
-                })
-                .catch(err => {
-                    console.error('Lỗi khi tải bảng xếp hạng:', err);
-                    body.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--danger);">Có lỗi khi tải bảng xếp hạng</td></tr>';
+                    rhymeResultHtml += '</ul>';
+                }
+            }
+
+            if (!foundRhyme) {
+                rhymeResultHtml = '<p class="text-red-500">Không tìm thấy các từ được gieo vần với nhau trong bài thơ.</p>';
+            }
+            rhymeResultHtml += '</div>';
+            
+            // Phân tích thanh điệu
+            let toneResult = [];
+            let bangCount = 0;
+            let tracCount = 0;
+
+            lines.forEach((line, index) => {
+                let words = line.trim().split(/\s+/);
+                let lineResult = words.map(word => {
+                    let mainVowels = word.split('').filter(char => 'áàảãạắằẳẵặấầẩẫậéèẻẽẹểễếệứửữựíìỉĩịóòỏõọốồổỗộớờởợỡúùủũụýỳỷỹỵ'.includes(char));
+                   
+                    let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                    if (tone === "B") bangCount++;
+                    if (tone === "T") tracCount++;
+                    return tone;
                 });
-        }
 
-        function escapeHtml(str) {
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
+                toneResult.push(`Dòng ${index + 1}: ${lineResult.join(' ')}`);
+            });
 
-        loadLeaderboard();
+            let toneResultHtml = `<div class="analysis-section"><h3 class="text-lg font-semibold text-gray-800 mb-2 flex items-center"><i class="fas fa-wave-square mr-2"></i> Phân tích vần trắc (T) và vần bằng (B)</h3>`;
+            toneResultHtml += toneResult.map(line => {
+                line = line.replace(/(T)/g, '<span class="tone-T">$1</span>');
+                line = line.replace(/(B)/g, '<span class="tone-B">$1</span>');
+                return `<p class="text-gray-600 tone-markers">${line}</p>`;
+            }).join('');
 
-        /* ===== Lấy đề thi ngẫu nhiên từ Firestore (do quản trị viên tạo) ===== */
-        async function fetchRandomExam() {
-            const snapshot = await db.collection('de_thi').get();
-            if (snapshot.empty) return null;
-            const docs = snapshot.docs;
-            const randomDoc = docs[Math.floor(Math.random() * docs.length)];
-            const data = randomDoc.data();
-            data._id = randomDoc.id;
-            return data;
-        }
-
-        /* ===== Bắt đầu bài thi ===== */
-        startExamBtn.addEventListener('click', async () => {
-            startExamBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tải đề thi...';
-            startExamBtn.disabled = true;
-            noExamMsg.classList.add('hidden-el');
-
-            try {
-                examData = await fetchRandomExam();
-                if (!examData) {
-                    noExamMsg.classList.remove('hidden-el');
-                    return;
+            // Phân tích tỷ lệ thanh điệu
+            let toneAnalysisHtml = '';
+            if (bangCount > 0 && tracCount > 0) {
+                if (bangCount > tracCount) {
+                    let ratio = bangCount / tracCount;
+                    if (ratio >= 1.5) {
+                        toneAnalysisHtml = `<p class="text-gray-600 font-bold mt-2">Bài thơ có âm điệu nhẹ nhàng, du dương.</p>`;
+                    } else {
+                        toneAnalysisHtml = `<p class="text-gray-600 font-bold mt-2">Bài thơ có âm điệu hài hòa, trầm bỗng.</p>`;
+                    }
+                } else {
+                    let ratio = tracCount / bangCount;
+                    if (ratio >= 1.5) {
+                        toneAnalysisHtml = `<p class="text-gray-600 font-bold mt-2">Bài thơ có âm điệu mạnh mẽ, hùng hồn.</p>`;
+                    } else {
+                        toneAnalysisHtml = `<p class="text-gray-600 font-bold mt-2">Bài thơ có âm điệu hài hòa, trầm bỗng.</p>`;
+                    }
                 }
-
-                displayExam(examData);
-                resetTimerValue();
-                startTimer();
-                fab.classList.remove('hidden-el');
-
-                startScreen.classList.add('hidden-el');
-                examScreen.classList.remove('hidden-el');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (error) {
-                console.error('Lỗi khi tải đề thi:', error);
-                alert('Có lỗi xảy ra khi tải đề thi. Vui lòng thử lại.');
-            } finally {
-                startExamBtn.innerHTML = '<i class="fas fa-play"></i> Bắt đầu thi';
-                startExamBtn.disabled = false;
+            } else {
+                toneAnalysisHtml = `<p class="text-gray-600 font-bold mt-2">Bài thơ có âm điệu hài hòa, trầm bỗng.</p>`;
             }
-        });
-
-        function displayExam(data) {
-            document.getElementById('exam-title-display').textContent = data.title ? data.title.toUpperCase() : 'ĐỀ THI THỬ MÔN NGỮ VĂN';
-            document.getElementById('reading-passage').textContent = data.reading.passage;
-
-            const questionsContainer = document.getElementById('reading-questions');
-            questionsContainer.innerHTML = '';
-            data.reading.questions.forEach((q) => {
-                const el = document.createElement('div');
-                el.className = 'question-card';
-                el.innerHTML = `
-                    <p style="font-weight:700; margin-bottom:0.4rem;"><span style="color:var(--primary-color);">Câu ${q.number}:</span> ${escapeHtml(q.content)}</p>
-                    <textarea id="reading-answer-${q.number}" class="answer-input" placeholder="Nhập câu trả lời của bạn..."></textarea>
-                    <div style="font-size:0.78rem; opacity:0.6; margin-top:0.3rem;">Dạng câu hỏi: ${escapeHtml(q.type || '')}</div>
-                `;
-                questionsContainer.appendChild(el);
-            });
-
-            document.getElementById('writing-task-1').textContent = data.writing.task1.content;
-            document.getElementById('writing-task-2').textContent = data.writing.task2.content;
-        }
-
-        function resetTimerValue() {
-            timeLeft = 120 * 60;
-        }
-
-        function startTimer() {
-            updateTimerDisplay();
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateTimerDisplay();
-                if (timeLeft <= 0) {
-                    stopTimer();
-                    alert('Hết giờ làm bài! Hệ thống sẽ tự động nộp bài.');
-                    submitExamBtn.click();
-                }
-            }, 1000);
-        }
-
-        function updateTimerDisplay() {
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-            timer.className = 'timer';
-            if (timeLeft <= 300) timer.classList.add('timer-warning');
-            if (timeLeft <= 60) { timer.classList.remove('timer-warning'); timer.classList.add('timer-danger'); }
-        }
-
-        function stopTimer() { clearInterval(timerInterval); }
-
-        function collectAnswers() {
-            userAnswers = { reading: {}, writing: { task1: '', task2: '' } };
-            examData.reading.questions.forEach(q => {
-                const el = document.getElementById(`reading-answer-${q.number}`);
-                userAnswers.reading[q.number] = el ? el.value : '';
-            });
-            userAnswers.writing.task1 = document.getElementById('answer-1').value;
-            userAnswers.writing.task2 = document.getElementById('answer-2').value;
-        }
-
-        /* ===== Nộp bài ===== */
-        submitExamBtn.addEventListener('click', async () => {
-            submitExamBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang chấm điểm...';
-            submitExamBtn.disabled = true;
-
-            try {
-                collectAnswers();
-                const result = await evaluateExam(examData, userAnswers);
-                displayResults(result);
-                stopTimer();
-
-                examScreen.classList.add('hidden-el');
-                resultScreen.classList.remove('hidden-el');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-
-                // Nếu đạt điểm tối đa, hỏi tên để lưu leaderboard
-                const rounded = Math.round(result.totalScore * 10) / 10;
-                if (rounded >= 10) {
-                    showNameModal(examData.title || 'Đề thi');
-                }
-            } catch (error) {
-                console.error('Lỗi khi chấm bài:', error);
-                alert('Có lỗi xảy ra khi chấm bài. Vui lòng thử lại.');
-            } finally {
-                submitExamBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Nộp bài';
-                submitExamBtn.disabled = false;
+            toneResultHtml += toneAnalysisHtml;
+            toneResultHtml += '</div>';
+            
+            // Phân tích nhân vật trữ tình
+            const nhanVatTruTinh = xacDinhNhanVatTruTinh(poem);
+            let characterHtml = `<div class="analysis-section"><h3 class="text-lg font-semibold text-gray-800 mb-2 flex items-center"><i class="fas fa-user mr-2"></i> Nhân vật trữ tình</h3>`;
+            characterHtml += `<p class="text-gray-600">${nhanVatTruTinh}</p></div>`;
+            
+            // Kiểm tra luật thơ Đường
+            let lawResult = checkDuongLuat(lines);
+            let lawHtml = '';
+            if (lawResult) {
+                lawHtml = `<div class="analysis-section"><h3 class="text-lg font-semibold text-gray-800 mb-2 flex items-center"><i class="fas fa-gavel mr-2"></i> Kiểm tra luật thơ Đường</h3>`;
+                lawHtml += `<p class="law-result">${lawResult}</p></div>`;
             }
-        });
-
-        /* ===== Chấm điểm bằng AI dựa trên barem do quản trị viên cung cấp ===== */
-        async function evaluateExam(exam, answers) {
-            const systemPrompt = `Bạn là một giáo viên Ngữ Văn THPT có nhiều năm kinh nghiệm chấm thi Tốt nghiệp THPT Quốc Gia.
-Bạn PHẢI chấm điểm bài làm của học sinh hoàn toàn dựa trên ĐÁP ÁN/BAREM chấm điểm do quản trị viên cung cấp, không tự thêm hoặc bớt tiêu chí.
-Chấm điểm khách quan, công bằng, đưa nhận xét ngắn gọn dễ hiểu, và gợi ý cải thiện nếu cần.
-CHỈ trả lời bằng một đối tượng JSON hợp lệ, không thêm bất kỳ chữ nào khác ngoài JSON (không markdown, không giải thích thêm).`;
-
-            const userPrompt = `
-ĐỀ THI VÀ BAREM (đáp án chuẩn do quản trị viên cung cấp):
-${JSON.stringify(exam, null, 2)}
-
-BÀI LÀM CỦA HỌC SINH:
-${JSON.stringify(answers, null, 2)}
-
-Hãy chấm điểm theo barem trên và trả lời CHÍNH XÁC theo định dạng JSON sau (không thêm trường khác, không thêm chữ nào ngoài JSON):
-{
-  "reading": {
-    "questions": [
-      { "number": 1, "score": 0.0, "maxScore": 0.0, "feedback": "...", "improvement": "..." }
-    ]
-  },
-  "writing": {
-    "task1": { "score": 0.0, "maxScore": 2.0, "feedback": "...", "improvement": "..." },
-    "task2": { "score": 0.0, "maxScore": 4.0, "feedback": "...", "improvement": "..." }
-  },
-  "overallFeedback": "..."
-}
-Lưu ý: "score" của mỗi câu không được vượt quá "maxScore" tương ứng lấy từ barem trong đề.
-`;
-
-            const messages = [
-                { role: 'system', content: systemPrompt },
-                { role: 'user', content: userPrompt }
-            ];
-
-            const text = await callAI(messages);
-            const jsonStart = text.indexOf('{');
-            const jsonEnd = text.lastIndexOf('}') + 1;
-            const jsonString = text.substring(jsonStart, jsonEnd);
-            const resultData = JSON.parse(jsonString);
-
-            // Tự tính lại tổng điểm để đảm bảo chính xác, không phụ thuộc AI tổng hợp
-            let readingTotal = 0;
-            resultData.reading.questions.forEach(q => { readingTotal += Number(q.score) || 0; });
-            const task1Score = Number(resultData.writing.task1.score) || 0;
-            const task2Score = Number(resultData.writing.task2.score) || 0;
-            let totalScore = readingTotal + task1Score + task2Score;
-            totalScore = Math.round(totalScore * 100) / 100;
-
-            resultData.reading.totalScore = Math.round(readingTotal * 100) / 100;
-            resultData.totalScore = totalScore;
-            resultData.scorePercentage = Math.min(100, Math.round((totalScore / 10) * 100));
-
-            return resultData;
+            
+            resultHtml += characterHtml + rhymeResultHtml + toneResultHtml + lawHtml;
+            return resultHtml;
         }
 
-        /* ===== Hiển thị kết quả ===== */
-        function displayResults(result) {
-            document.getElementById('total-score').textContent = result.totalScore.toFixed(1);
-            document.getElementById('score-progress').style.width = `${result.scorePercentage}%`;
-
-            const scoreFeedback = document.getElementById('score-feedback');
-            let feedbackText = '';
-            if (result.totalScore >= 8) feedbackText = 'Kết quả xuất sắc! Bài làm của bạn rất tốt.';
-            else if (result.totalScore >= 6) feedbackText = 'Kết quả khá tốt! Còn vài điểm cần cải thiện.';
-            else if (result.totalScore >= 4) feedbackText = 'Kết quả trung bình, cần ôn tập thêm.';
-            else feedbackText = 'Kết quả chưa tốt, cần dành thêm thời gian ôn luyện.';
-            scoreFeedback.textContent = result.overallFeedback ? result.overallFeedback : feedbackText;
-
-            const readingFeedback = document.getElementById('reading-feedback');
-            readingFeedback.innerHTML = '';
-            result.reading.questions.forEach(q => {
-                const maxScore = Number(q.maxScore) || 1;
-                const ratio = maxScore > 0 ? q.score / maxScore : 0;
-                let resultClass = 'result-low';
-                if (ratio >= 0.8) resultClass = 'result-good';
-                else if (ratio >= 0.5) resultClass = 'result-medium';
-
-                const el = document.createElement('div');
-                el.className = `result-card ${resultClass}`;
-                el.style.marginBottom = '1rem';
-                el.innerHTML = `
-                    <div class="result-header">
-                        <span>Câu ${q.number}</span>
-                        <span style="font-weight:700;">${Number(q.score).toFixed(1)}/${maxScore.toFixed(1)} điểm</span>
-                    </div>
-                    <div class="result-body">
-                        <p style="margin-bottom:0.5rem;">${escapeHtml(q.feedback || '')}</p>
-                        ${q.improvement ? `<div class="improvement-box"><strong>Gợi ý cải thiện:</strong> ${escapeHtml(q.improvement)}</div>` : ''}
-                    </div>
-                `;
-                readingFeedback.appendChild(el);
-            });
-
-            const w1 = result.writing.task1;
-            const w1Max = Number(w1.maxScore) || 2;
-            let w1Class = 'result-low';
-            if (w1.score / w1Max >= 0.8) w1Class = 'result-good';
-            else if (w1.score / w1Max >= 0.5) w1Class = 'result-medium';
-            document.getElementById('writing-1-feedback').className = `result-card ${w1Class}`;
-            document.getElementById('writing-1-score').textContent = `${Number(w1.score).toFixed(1)}/${w1Max.toFixed(1)}`;
-            document.getElementById('writing-1-comment').textContent = w1.feedback || '';
-            document.getElementById('writing-1-improvement').innerHTML = w1.improvement ? `<strong>Gợi ý cải thiện:</strong> ${escapeHtml(w1.improvement)}` : '';
-
-            const w2 = result.writing.task2;
-            const w2Max = Number(w2.maxScore) || 4;
-            let w2Class = 'result-low';
-            if (w2.score / w2Max >= 0.8) w2Class = 'result-good';
-            else if (w2.score / w2Max >= 0.5) w2Class = 'result-medium';
-            document.getElementById('writing-2-feedback').className = `result-card ${w2Class}`;
-            document.getElementById('writing-2-score').textContent = `${Number(w2.score).toFixed(1)}/${w2Max.toFixed(1)}`;
-            document.getElementById('writing-2-comment').textContent = w2.feedback || '';
-            document.getElementById('writing-2-improvement').innerHTML = w2.improvement ? `<strong>Gợi ý cải thiện:</strong> ${escapeHtml(w2.improvement)}` : '';
+        // Hàm kiểm tra luật thơ Đường
+        function checkDuongLuat(lines) {
+            const lineWordCounts = lines.map(line => line.split(/\s+/).filter(word => word.trim() !== "").length);
+            const totalLines = lines.length;
+            
+            if (lineWordCounts.every(count => count === 7) && totalLines === 8) {
+                const ruleBy = [
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"]
+                ];
+                const ruleTrac = [
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"]
+                ];
+           
+                let isMatchBy = true;
+                let isMatchTrac = true;
+                
+                lines.forEach((line, index) => {
+                    let words = line.trim().split(/\s+/);
+                    let positionsToCheck = [1, 3, 5];
+           
+                    let lineCheckBy = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleBy[index][i];
+                    });
+                    
+                    let lineCheckTrac = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleTrac[index][i];
+                    });
+           
+                    if (!lineCheckBy) isMatchBy = false;
+                    if (!lineCheckTrac) isMatchTrac = false;
+                });
+                
+                if (isMatchBy) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần bằng)";
+                } else if (isMatchTrac) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần trắc)";
+                } else {
+                    return "Bài thơ không tuân theo luật thơ Đường";
+                }
+            } else if (lineWordCounts.every(count => count === 7) && totalLines === 4) {
+                const ruleBy = [
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"]
+                ];
+                const ruleTrac = [
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"]
+                ];
+                
+                let isMatchBy = true;
+                let isMatchTrac = true;
+                
+                lines.forEach((line, index) => {
+                    let words = line.trim().split(/\s+/);
+                    let positionsToCheck = [1, 3, 5];
+           
+                    let lineCheckBy = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleBy[index][i];
+                    });
+                    
+                    let lineCheckTrac = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleTrac[index][i];
+                    });
+           
+                    if (!lineCheckBy) isMatchBy = false;
+                    if (!lineCheckTrac) isMatchTrac = false;
+                });
+                
+                if (isMatchBy) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần bằng)";
+                } else if (isMatchTrac) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần trắc)";
+                } else {
+                    return "Bài thơ không tuân theo luật thơ Đường";
+                }
+            } else if (lineWordCounts.every(count => count === 5) && totalLines === 8) {
+                const ruleBy = [
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"]
+                ];
+                const ruleTrac = [
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"]
+                ];
+                
+                let isMatchBy = true;
+                let isMatchTrac = true;
+                
+                lines.forEach((line, index) => {
+                    let words = line.trim().split(/\s+/);
+                    let positionsToCheck = [1, 3];
+           
+                    let lineCheckBy = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleBy[index][i];
+                    });
+                    
+                    let lineCheckTrac = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleTrac[index][i];
+                    });
+           
+                    if (!lineCheckBy) isMatchBy = false;
+                    if (!lineCheckTrac) isMatchTrac = false;
+                });
+                
+                if (isMatchBy) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần bằng)";
+                } else if (isMatchTrac) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần trắc)";
+                } else {
+                    return "Bài thơ không tuân theo luật thơ Đường";
+                }
+            } else if (lineWordCounts.every(count => count === 5) && totalLines === 4) {
+                const ruleBy = [
+                    ["B", "T", "B"],
+                    ["T", "B", "T"],
+                    ["T", "B", "T"],
+                    ["B", "T", "B"]
+                ];
+                const ruleTrac = [
+                    ["T", "B", "T"],
+                    ["B", "T", "B"],
+                    ["B", "T", "B"],
+                    ["T", "B", "T"]
+                ];
+                
+                let isMatchBy = true;
+                let isMatchTrac = true;
+                
+                lines.forEach((line, index) => {
+                    let words = line.trim().split(/\s+/);
+                    let positionsToCheck = [1, 3];
+           
+                    let lineCheckBy = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleBy[index][i];
+                    });
+                    
+                    let lineCheckTrac = positionsToCheck.every((pos, i) => {
+                        if (pos >= words.length) return false;
+           
+                        let word = words[pos];
+                        let mainVowels = word.split('').filter(char =>
+                            'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(char)
+                        );
+           
+                        let tone = mainVowels.some(vowel => 'áảãạắẳẵặấẩẫậéẻẽẹếểễệíỉĩịóỏõọốổỗộớởợỡúùủũụýỳỷỹỵứửữự'.includes(vowel)) ? "T" : "B";
+                        return tone === ruleTrac[index][i];
+                    });
+           
+                    if (!lineCheckBy) isMatchBy = false;
+                    if (!lineCheckTrac) isMatchTrac = false;
+                });
+                
+                if (isMatchBy) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần bằng)";
+                } else if (isMatchTrac) {
+                    return "Bài thơ trên thỏa mãn Đường luật (luật vần trắc)";
+                } else {
+                    return "Bài thơ không tuân theo luật thơ Đường";
+                }
+            }
+            
+            return null;
         }
 
-        /* ===== Modal nhập tên khi đạt điểm 10 ===== */
-        const nameModal = document.getElementById('name-modal');
-        const nameInput = document.getElementById('leaderboard-name-input');
-        const saveLeaderboardBtn = document.getElementById('save-leaderboard-btn');
-        const skipLeaderboardBtn = document.getElementById('skip-leaderboard-btn');
-        let pendingExamTitle = '';
+        // Hàm xác định thể thơ
+        function determinePoemType(lines) {
+            const lineWordCounts = lines.map(line => line.split(/\s+/).filter(word => word.trim() !== "").length);
+            const totalLines = lines.length;
+            
+            let poemType = '';
+            let reason = '';
+            let link = '';
 
-        function showNameModal(examTitle) {
-            pendingExamTitle = examTitle;
-            nameInput.value = '';
-            nameModal.classList.remove('hidden-el');
+            if (lineWordCounts.every(count => count === 4)) {
+                poemType = "thơ bốn chữ";
+                reason = "Tất cả các dòng đều có 4 từ.";
+                link = "https://sites.google.com/d/157wMz39hNOMUG90CfaDlPFyeGXgwQmud/p/1xH8yScX5yIFrJJD3Xfxo_5znSZR-alt4/edit";
+            } else if (lineWordCounts.every(count => count === 5) && totalLines !== 4 && totalLines !== 8) {
+                poemType = "thơ năm chữ";
+                reason = "Tất cả các dòng đều có 5 từ.";
+                link = "https://sites.google.com/d/1vjOkMcWDcfwasj7uNdo7Soz260kweM9t/p/1A2iKqRsaA-2y6ZxCQiy3H0ptagEjEw3-/edit";
+            } else if (lineWordCounts.every(count => count === 6)) {
+                poemType = "thơ sáu chữ";
+                reason = "Tất cả các dòng đều có 6 từ.";
+                link = "https://sites.google.com/d/1Jy8TB7pMaXtPPBnckid8FkaAQtjas-Ul/p/1f46o9Bt46EemtXaEqLU7rpuAJXOuiaxq/edit";
+            } else if (lineWordCounts.every(count => count === 7) && totalLines !== 8 && totalLines !== 4) {
+                poemType = "thơ bảy chữ";
+                reason = "Tất cả các dòng đều có 7 từ.";
+                link = "https://sites.google.com/d/1w_ieq9HwZiPvub6P8Ed27S1Io3ccR-qu/p/1j53fl-D6zs5xNZjgsYfLooESG6UNSA6o/edit";
+            } else if (lineWordCounts.every(count => count === 8)) {
+                poemType = "thơ tám chữ";
+                reason = "Tất cả các dòng đều có 8 từ.";
+                link = "https://sites.google.com/d/101GPt8qMIMbJKisOQls7VSgNS4sJnHkN/p/12Jzo7WH2tC_zthwOGAm4bMiQpOxmJrzr/edit";
+            } else if (lineWordCounts.filter((count, index) => index % 2 === 0).every(count => count === 6) &&
+                       lineWordCounts.filter((count, index) => index % 2 !== 0).every(count => count === 8)) {
+                poemType = "thơ lục bát";
+                reason = "Các dòng lẻ có 6 từ và các dòng chẵn có 8 từ.";
+                link = "https://sites.google.com/d/1nyEJoi-e6ROC4tPFBzZQLy8d_mB25vhl/p/1zXi3KVyRn0KocfaXOaqnbIVJDjbuNNz1/edit";
+            } else if (lineWordCounts[0] === 7 && lineWordCounts[1] === 7 && lineWordCounts[2] === 6 && lineWordCounts[3] === 8) {
+                poemType = "thơ song thất lục bát";
+                reason = "Dòng 1 có 7 từ, dòng 2 có 7 từ, dòng 3 có 6 từ và dòng 4 có 8 từ.";
+                link = "https://sites.google.com/d/1rBuKQ4O7zQCia0ddqHsWDTLKeB1xZhyr/p/1rWjrFWyrwktd9FwrgC-56zC9yPRsP_Zt/edit";
+            } else if (lineWordCounts.every(count => count === 7) && totalLines === 8) {
+                poemType = "thơ thất ngôn bát cú";
+                reason = "Tất cả các dòng đều có 7 từ và tổng số dòng là 8.";
+                link = "https://sites.google.com/d/1n3KX2r7B8dKid99SZPbFlLA33HHRWg4V/p/1sL3M1WDcOCcQ_hWp-D1BV6VrW6rgQkBv/edit";
+            } else if (lineWordCounts.every(count => count === 7) && totalLines === 4) {
+                poemType = "thơ thất ngôn tứ tuyệt";
+                reason = "Tất cả các dòng đều có 7 từ và tổng số dòng là 4.";
+                link = "https://sites.google.com/d/1q-T_B1zL3OQw4_n6y6TYqwnCaEhDEBj6/p/15UDMnJtbDWJe2nNgBc9hB46IuqBJ4-XA/edit";
+            } else if (lineWordCounts.every(count => count === 5) && totalLines === 4) {
+                poemType = "thơ ngũ ngôn tứ tuyệt";
+                reason = "Tất cả các dòng đều có 5 từ và tổng số dòng là 4.";
+                link = "https://sites.google.com/d/1SzDcYd0SNTQIUc5hY4WiNPqfZ3XPLr4E/p/1asf_V6GEdTxPPO4AvU-cx1rS28QjD9Kx/edit";
+            } else if (lineWordCounts.every(count => count === 5) && totalLines === 8) {
+                poemType = "thơ ngũ ngôn bát cú";
+                reason = "Tất cả các dòng đều có 5 từ và tổng số dòng là 8."; 
+                link = "https://sites.google.com/d/1VE--6sIi1SSOKg87Vdk1Rfs4jfmesvqe/p/1-T_OVaq7_djFH0VRPxoDZjGGd8jQG8oy/edit";
+            } else if (lineWordCounts.every(count => count === 7 || count === 6) && 
+                       lineWordCounts.includes(7) && 
+                       lineWordCounts.includes(6)) {
+                poemType = "thơ thất ngôn xen lục ngôn";
+                reason = "Bài thơ chủ yếu có 7 từ mỗi dòng, nhưng có một số dòng có 6 từ xen kẽ.";
+                link = "https://sites.google.com/d/1aeQhnz1ZSlamkzjgQb28rgGdCPiuY75d/p/1tvdRIvpY5klXn--7i4L53BY9CTAI9YX7/edit";
+            } else {
+                poemType = "thơ tự do";
+                reason = "Số từ của các dòng không theo quy luật của bất kì 1 thể thơ nào.";
+                link = "https://sites.google.com/d/1GJq252v2Fi9hp-oknhlGuxMM1ksz4f2E/p/14bdR8c4joPxWbyzGaeXBZKJfWLPCRZv1/edit";
+            }
+            
+            return { poemType, reason, link };
         }
 
-        function closeNameModal() {
-            nameModal.classList.add('hidden-el');
+        // Hàm gọi API Gemini
+        async function fetchGemini(prompt, model) {
+            try {
+                const response = await fetch(AI_CONFIG.endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${AI_CONFIG.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: AI_CONFIG.model,
+                        messages: [
+                            { role: "system", content: "Bạn là chuyên gia phân tích văn học Việt Nam. Hãy phân tích chi tiết, chính xác và bằng tiếng Việt." },
+                            { role: "user", content: prompt }
+                        ],
+                        max_tokens: 1000,
+                        temperature: 0.7
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                return data.choices[0].message.content.trim();
+            } catch (error) {
+                console.error('Lỗi khi gọi API:', error);
+                throw error;
+            }
         }
 
-        saveLeaderboardBtn.addEventListener('click', async () => {
-            const name = nameInput.value.trim();
-            if (!name) {
-                nameInput.focus();
+        // Hàm phân tích chính
+        async function analyzeText() {
+            const inputText = document.getElementById('inputText').value.trim();
+            const resultDiv = document.getElementById('result');
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const progressContainer = document.getElementById('progressContainer');
+
+            if (!inputText) {
+                resultDiv.innerHTML = '<div class="analysis-section"><p class="text-red-500">Vui lòng nhập nội dung!</p></div>';
                 return;
             }
-            saveLeaderboardBtn.disabled = true;
-            saveLeaderboardBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
-            try {
-                await db.collection('leaderboard').add({
-                    name: name,
-                    score: 10,
-                    examTitle: pendingExamTitle,
-                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
-                });
-                loadLeaderboard();
-            } catch (error) {
-                console.error('Lỗi khi lưu bảng xếp hạng:', error);
-                alert('Có lỗi khi lưu tên vào bảng xếp hạng. Vui lòng thử lại.');
-            } finally {
-                saveLeaderboardBtn.disabled = false;
-                saveLeaderboardBtn.innerHTML = 'Lưu tên';
-                closeNameModal();
+
+            // Kiểm tra số từ
+            const wordCount = countWords(inputText);
+            if (wordCount < 4) {
+                resultDiv.innerHTML = '<div class="analysis-section"><p class="text-red-500">Bạn phải nhập ít nhất 4 chữ trở lên!</p></div>';
+                return;
             }
-        });
 
-        skipLeaderboardBtn.addEventListener('click', closeNameModal);
+            // Vô hiệu hóa nút phân tích và hiển thị tiến trình
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang phân tích...';
+            progressContainer.style.display = 'block';
+            
+            // Reset tiến trình
+            analysisProgress = {
+                total: 0,
+                completed: 0,
+                items: []
+            };
+            
+            resultDiv.innerHTML = '';
 
-        /* ===== Làm lại / Đề mới ===== */
-        retryBtn.addEventListener('click', () => {
-            resultScreen.classList.add('hidden-el');
-            examScreen.classList.remove('hidden-el');
-            resetExam();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+            try {
+                // Lấy các tùy chọn từ người dùng
+                const useAIFull = document.getElementById('aiFullToggle').checked;
+                const analysisMode = document.getElementById('analysisMode').value;
+                const usePhonetic = document.getElementById('phoneticToggle').checked;
+                const useComparison = document.getElementById('comparisonToggle').checked;
+                
+                const model = AI_CONFIG.model;
+                
+                // Xác định loại văn bản
+                addProgressItem('Xác định loại văn bản');
+                const typeResponse = await fetchGemini(
+                    `Xác định nội dung sau thuộc loại: thơ, ca dao, tục ngữ, văn xuôi, hay không phải văn học. Chỉ trả lời một trong năm lựa chọn. Nội dung: "${inputText}"`,
+                    model
+                );
+                let textType = typeResponse.trim().toLowerCase();
+                completeProgressItem(0);
 
-        newExamBtn.addEventListener('click', () => {
-            resultScreen.classList.add('hidden-el');
-            startScreen.classList.remove('hidden-el');
-            resetExam();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+                resultDiv.innerHTML = `
+                    <div class="analysis-section">
+                        <h3><i class="fas fa-tags"></i> Kết quả phân loại</h3>
+                        <div class="analysis-content">
+                            <p><strong>Loại văn bản:</strong> ${textType.charAt(0).toUpperCase() + textType.slice(1)}</p>
+                        </div>
+                    </div>`;
 
-        function resetExam() {
-            timeLeft = 120 * 60;
-            examData = null;
-            userAnswers = {};
-            document.querySelectorAll('textarea').forEach(t => t.value = '');
+                // Phân tích dựa trên loại văn bản
+                if (textType === 'thơ') {
+                    await analyzePoem(inputText, model, useAIFull, usePhonetic, useComparison);
+                } else if (textType === 'ca dao' || textType === 'tục ngữ') {
+                    await analyzeFolkLiterature(inputText, model, textType, useComparison);
+                } else if (textType === 'văn xuôi') {
+                    await analyzeProse(inputText, model, useComparison);
+                } else {
+                    resultDiv.innerHTML += `<div class="analysis-section"><p>Không có phân tích chi tiết vì nội dung không phải thơ, ca dao, tục ngữ, hay văn xuôi.</p></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML += `<div class="analysis-section"><p class="text-red-500">Đã xảy ra lỗi: ${error.message}</p></div>`;
+            } finally {
+                // Kích hoạt lại nút phân tích
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = '<i class="fas fa-search mr-2"></i> Bắt đầu phân tích';
+            }
         }
 
-        /* ===== FAB ===== */
-        fab.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-        window.addEventListener('scroll', () => {
-            if (window.pageYOffset > 300 && !examScreen.classList.contains('hidden-el')) {
-                fab.classList.remove('hidden-el');
-            } else if (window.pageYOffset <= 300) {
-                fab.classList.add('hidden-el');
+        // Hàm phân tích thơ
+        async function analyzePoem(inputText, model, useAIFull, usePhonetic, useComparison) {
+            const resultDiv = document.getElementById('result');
+            const lines = inputText.split(/\n+/).filter(line => line.trim() !== '');
+            
+            // Xác định tên tác phẩm
+            addProgressItem('Xác định tên tác phẩm');
+            const titleResponse = await fetchGemini(
+                `Xác định tên tác phẩm của bài thơ sau dựa trên nội dung hoặc đặc điểm văn học. Chỉ trả về tên tác phẩm hoặc "Không xác định được" nếu không nhận diện được. Nội dung: "${inputText}"`,
+                model
+            );
+            let titleResult = titleResponse.trim();
+            completeProgressItem(analysisProgress.items.length - 1);
+
+            resultDiv.innerHTML += `
+                <div class="analysis-section">
+                    <h3><i class="fas fa-book"></i> Tên tác phẩm</h3>
+                    <div class="analysis-content">
+                        <p><strong>Tác phẩm:</strong> ${titleResult}</p>
+                    </div>
+                </div>`;
+
+            // Xác định thể thơ
+            addProgressItem('Xác định thể thơ');
+            let poemTypeInfo;
+            if (useAIFull) {
+                const typeResponse = await fetchGemini(
+                    `Xác định thể thơ của bài thơ sau và giải thích ngắn gọn. Nội dung: "${inputText}"`,
+                    model
+                );
+                poemTypeInfo = {
+                    poemType: typeResponse,
+                    reason: "Phân tích bằng AI",
+                    link: ""
+                };
+            } else {
+                poemTypeInfo = determinePoemType(lines);
+            }
+            completeProgressItem(analysisProgress.items.length - 1);
+
+            resultDiv.innerHTML += `
+                <div class="analysis-section">
+                    <h3><i class="fas fa-ruler-combined"></i> Thể thơ</h3>
+                    <div class="analysis-content">
+                        <p><strong>Thể loại:</strong> ${poemTypeInfo.poemType}</p>
+                        <p><strong>Giải thích:</strong> ${poemTypeInfo.reason}</p>
+                        ${poemTypeInfo.link ? `<p><strong>Tìm hiểu thêm:</strong> <a href="${poemTypeInfo.link}" target="_blank" class="text-blue-600 hover:underline">${poemTypeInfo.poemType}</a></p>` : ''}
+                    </div>
+                </div>`;
+
+            // Phân tích kỹ thuật (vần, thanh điệu, nhân vật trữ tình)
+            if (usePhonetic && !useAIFull) {
+                addProgressItem('Phân tích kỹ thuật');
+                const technicalAnalysis = analyzeRhymeAndTone(inputText);
+                resultDiv.innerHTML += technicalAnalysis;
+                completeProgressItem(analysisProgress.items.length - 1);
+            } else if (useAIFull) {
+                addProgressItem('Phân tích kỹ thuật');
+                const technicalResponse = await fetchGemini(
+                    `Phân tích kỹ thuật của bài thơ sau với các đầu mục: **Vần điệu**, **Nhịp điệu**, **Thanh điệu**, **Nhân vật trữ tình**. Trả lời ngắn gọn, súc tích. Nội dung: "${inputText}"`,
+                    model
+                );
+                resultDiv.innerHTML += `
+                    <div class="analysis-section">
+                        <h3><i class="fas fa-cogs"></i> Phân tích kỹ thuật</h3>
+                        <div class="analysis-content">
+                            ${parseMarkdown(technicalResponse)}
+                        </div>
+                    </div>
+                `;
+                completeProgressItem(analysisProgress.items.length - 1);
+            }
+
+            // Phân tích nội dung và nghệ thuật
+            const analyses = [
+                {
+                    prompt: `Phân tích nội dung bài thơ với các đầu mục: **Ý nghĩa**, **Cảm xúc**, **Chủ đề chính**.`,
+                    title: 'Phân tích nội dung',
+                    icon: 'fas fa-scroll'
+                },
+                {
+                    prompt: `Phân tích nghệ thuật bài thơ với các đầu mục: **Biện pháp tu từ**, **Nhịp điệu**, **Hình ảnh**, **Cách gieo vần**.`,
+                    title: 'Phân tích nghệ thuật',
+                    icon: 'fas fa-paint-brush'
+                }
+            ];
+
+            // Thêm phân tích so sánh nếu được chọn
+            if (useComparison) {
+                analyses.push({
+                    prompt: `So sánh bài thơ này với các tác phẩm cùng thể loại hoặc cùng tác giả (nếu có thể xác định). Nêu điểm tương đồng và khác biệt.`,
+                    title: 'So sánh với tác phẩm khác',
+                    icon: 'fas fa-balance-scale'
+                });
+            }
+
+            // Thực hiện các phân tích song song
+            for (let i = 0; i < analyses.length; i++) {
+                addProgressItem(analyses[i].title);
+            }
+
+            const analysisPromises = analyses.map((analysis, index) => 
+                fetchGemini(
+                    `${analysis.prompt} Trả lời ngắn gọn, súc tích, mỗi ý xuống dòng. Chỉ sử dụng ** để in đậm các đầu mục (ví dụ: **Ý nghĩa**, **Cảm xúc**), không in đậm hoặc in nghiêng nội dung chi tiết trừ khi cần nhấn mạnh ý nghĩa cụ thể. Nội dung: "${inputText}"`,
+                    model
+                )
+                .then(result => {
+                    // Tìm đúng index của mục này trong progress
+                    const itemIndex = analysisProgress.items.findIndex(item => item.name === analysis.title);
+                    if (itemIndex !== -1) {
+                        completeProgressItem(itemIndex);
+                    }
+                    return {
+                        title: analysis.title,
+                        content: result,
+                        icon: analysis.icon
+                    };
+                })
+                .catch(error => {
+                    // Tìm đúng index của mục này trong progress
+                    const itemIndex = analysisProgress.items.findIndex(item => item.name === analysis.title);
+                    if (itemIndex !== -1) {
+                        errorProgressItem(itemIndex);
+                    }
+                    return {
+                        title: analysis.title,
+                        content: `Lỗi khi phân tích: ${error.message}`,
+                        icon: 'fas fa-exclamation-triangle'
+                    };
+                })
+            );
+
+            const results = await Promise.all(analysisPromises);
+            
+            // Hiển thị kết quả
+            results.forEach(result => {
+                resultDiv.innerHTML += `
+                    <div class="analysis-section">
+                        <h3><i class="${result.icon}"></i> ${result.title}</h3>
+                        <div class="analysis-content">
+                            ${parseMarkdown(result.content)}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Hàm phân tích ca dao, tục ngữ
+        async function analyzeFolkLiterature(inputText, model, textType, useComparison) {
+            const resultDiv = document.getElementById('result');
+            
+            const analyses = [
+                {
+                    prompt: `Phân tích ${textType} với các đầu mục: **Nghĩa đen**, **Nghĩa bóng**, **Hình ảnh và từ ngữ**, **Ý nghĩa biểu tượng**.`,
+                    title: 'Nghĩa đen và nghĩa bóng',
+                    icon: 'fas fa-lightbulb'
+                },
+                {
+                    prompt: `Phân tích nội dung tư tưởng của ${textType} với các đầu mục: **Bài học**, **Tình cảm – cảm xúc**, **Thái độ**.`,
+                    title: 'Nội dung tư tưởng',
+                    icon: 'fas fa-brain'
+                },
+                {
+                    prompt: `Phân tích biện pháp nghệ thuật của ${textType} với các đầu mục: **Hình ảnh dân dã**, **Biện pháp tu từ**, **Nhịp điệu**, **Âm điệu**, **Từ láy**, **Cách gieo vần**, **Cấu trúc lặp**.`,
+                    title: 'Biện pháp nghệ thuật',
+                    icon: 'fas fa-paint-brush'
+                },
+                {
+                    prompt: `Phân tích giá trị của ${textType} với các đầu mục: **Giá trị nhân văn**, **Giá trị nhân đạo**, **Giá trị giáo dục**.`,
+                    title: 'Giá trị',
+                    icon: 'fas fa-star'
+                }
+            ];
+
+            // Thêm phân tích so sánh nếu được chọn
+            if (useComparison) {
+                analyses.push({
+                    prompt: `So sánh ${textType} này với các ${textType} khác cùng chủ đề. Nêu điểm tương đồng và khác biệt.`,
+                    title: 'So sánh với tác phẩm khác',
+                    icon: 'fas fa-balance-scale'
+                });
+            }
+
+            // Thêm các mục vào tiến trình
+            for (let i = 0; i < analyses.length; i++) {
+                addProgressItem(analyses[i].title);
+            }
+
+            // Thực hiện các phân tích song song
+            const analysisPromises = analyses.map((analysis, index) => 
+                fetchGemini(
+                    `${analysis.prompt} Trả lời ngắn gọn, súc tích, mỗi ý xuống dòng. Chỉ sử dụng ** để in đậm các đầu mục (ví dụ: **Ý nghĩa**, **Cảm xúc**), không in đậm hoặc in nghiêng nội dung chi tiết trừ khi cần nhấn mạnh ý nghĩa cụ thể. Nội dung: "${inputText}"`,
+                    model
+                )
+                .then(result => {
+                    completeProgressItem(index + 1); // +1 vì đã có 1 mục trước đó (xác định loại văn bản)
+                    return {
+                        title: analysis.title,
+                        content: result,
+                        icon: analysis.icon
+                    };
+                })
+                .catch(error => {
+                    errorProgressItem(index + 1);
+                    return {
+                        title: analysis.title,
+                        content: `Lỗi khi phân tích: ${error.message}`,
+                        icon: 'fas fa-exclamation-triangle'
+                    };
+                })
+            );
+
+            const results = await Promise.all(analysisPromises);
+            
+            // Hiển thị kết quả
+            results.forEach(result => {
+                resultDiv.innerHTML += `
+                    <div class="analysis-section">
+                        <h3><i class="${result.icon}"></i> ${result.title}</h3>
+                        <div class="analysis-content">
+                            ${parseMarkdown(result.content)}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Hàm phân tích văn xuôi
+        async function analyzeProse(inputText, model, useComparison) {
+            const resultDiv = document.getElementById('result');
+            
+            const analyses = [
+                {
+                    prompt: 'Xác định thể loại của văn bản (truyện ngắn, tiểu thuyết, tản văn, bút ký, tùy bút, hồi ký, văn nghị luận, văn miêu tả, v.v.). Giải thích ngắn gọn tại sao.',
+                    title: 'Xác định thể loại',
+                    icon: 'fas fa-tags'
+                },
+                {
+                    prompt: 'Tóm tắt ngắn gọn nội dung chính của văn bản trong 3-5 câu. Làm nổi bật các sự kiện, tình tiết chính.',
+                    title: 'Tóm tắt nội dung',
+                    icon: 'fas fa-scroll'
+                },
+                {
+                    prompt: 'Phân tích cấu trúc văn bản với các đầu mục: **Bố cục**, **Mạch văn**, **Cách triển khai ý**, **Điểm nhìn trần thuật**.',
+                    title: 'Phân tích cấu trúc',
+                    icon: 'fas fa-project-diagram'
+                },
+                {
+                    prompt: 'Phân tích các nhân vật (nếu có) với các đầu mục: **Tính cách**, **Hành động**, **Mối quan hệ**, **Vai trò trong cốt truyện**.',
+                    title: 'Phân tích nhân vật',
+                    icon: 'fas fa-users'
+                },
+                {
+                    prompt: 'Phân tích ngôn ngữ văn bản với các đầu mục: **Từ ngữ đặc sắc**, **Biện pháp tu từ**, **Giọng điệu**, **Phong cách ngôn ngữ**.',
+                    title: 'Phân tích ngôn ngữ',
+                    icon: 'fas fa-language'
+                },
+                {
+                    prompt: 'Phân tích chủ đề và thông điệp của văn bản với các đầu mục: **Chủ đề chính**, **Thông điệp**, **Giá trị nhân văn**, **Liên hệ thực tế**.',
+                    title: 'Phân tích chủ đề',
+                    icon: 'fas fa-lightbulb'
+                }
+            ];
+
+            // Thêm phân tích so sánh nếu được chọn
+            if (useComparison) {
+                analyses.push({
+                    prompt: 'So sánh văn bản này với các tác phẩm cùng thể loại hoặc cùng tác giả (nếu có thể xác định). Nêu điểm tương đồng và khác biệt.',
+                    title: 'So sánh với tác phẩm khác',
+                    icon: 'fas fa-balance-scale'
+                });
+            }
+
+            // Thêm các mục vào tiến trình
+            for (let i = 0; i < analyses.length; i++) {
+                addProgressItem(analyses[i].title);
+            }
+
+            // Thực hiện các phân tích song song
+            const analysisPromises = analyses.map((analysis, index) => 
+                fetchGemini(
+                    `${analysis.prompt} Trả lời ngắn gọn, súc tích, mỗi ý xuống dòng. Chỉ sử dụng ** để in đậm các đầu mục (ví dụ: **Ý nghĩa**, **Cảm xúc**), không in đậm hoặc in nghiêng nội dung chi tiết trừ khi cần nhấn mạnh ý nghĩa cụ thể. Nội dung: "${inputText}"`,
+                    model
+                )
+                .then(result => {
+                    completeProgressItem(index + 1); // +1 vì đã có 1 mục trước đó (xác định loại văn bản)
+                    return {
+                        title: analysis.title,
+                        content: result,
+                        icon: analysis.icon
+                    };
+                })
+                .catch(error => {
+                    errorProgressItem(index + 1);
+                    return {
+                        title: analysis.title,
+                        content: `Lỗi khi phân tích: ${error.message}`,
+                        icon: 'fas fa-exclamation-triangle'
+                    };
+                })
+            );
+
+            const results = await Promise.all(analysisPromises);
+            
+            // Hiển thị kết quả
+            results.forEach(result => {
+                resultDiv.innerHTML += `
+                    <div class="analysis-section">
+                        <h3><i class="${result.icon}"></i> ${result.title}</h3>
+                        <div class="analysis-content">
+                            ${parseMarkdown(result.content)}
+                        </div>
+                    </div>`;
+            });
+        }
+
+        // Gán sự kiện cho nút phân tích
+        document.getElementById('analyzeBtn').addEventListener('click', analyzeText);
+        
+        // Gán sự kiện cho phím Enter trong textarea
+        document.getElementById('inputText').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.ctrlKey) {
+                analyzeText();
             }
         });
     </script>
