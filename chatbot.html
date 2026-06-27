@@ -877,7 +877,12 @@
             });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             const data = await response.json();
-            return data.choices[0].message.content.trim();
+            const content = data?.choices?.[0]?.message?.content?.trim();
+            if (!content) {
+                const reason = !data?.choices?.length ? "API không trả về choices" : "Nội dung phản hồi bị rỗng";
+                throw new Error(reason);
+            }
+            return content;
         }
 
         const chatMessages = document.getElementById('chat-messages');
