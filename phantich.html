@@ -1597,7 +1597,12 @@
                 }
                 
                 const data = await response.json();
-                return data.choices[0].message.content.trim();
+                const content = data?.choices?.[0]?.message?.content?.trim();
+                if (!content) {
+                    const reason = !data?.choices?.length ? "API không trả về choices" : "Nội dung phản hồi bị rỗng";
+                    throw new Error(reason);
+                }
+                return content;
             } catch (error) {
                 console.error('Lỗi khi gọi API:', error);
                 throw error;
