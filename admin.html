@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản trị Đề thi (Ẩn) - Hỗ Trợ Văn Học</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="icon-light.png" type="image/png" id="favicon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <style>
+        :root {
+            --primary-color: #ff8c45;
+            --secondary-color: #2c82c9;
+            --bg-color: #f1f5f9;
+            --text-color: #1e293b;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 16px rgba(0,0,0,0.08);
+            --border-color: #e2e8f0;
+            --muted-bg: #f8fafc;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); line-height:1.6; padding-bottom: 4rem; }
+        .container { max-width: 950px; margin: 0 auto; padding: 0 16px; }
+
+        .admin-header {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            color: white;
+            padding: 1.5rem 0;
+            margin-bottom: 2rem;
+        }
+        .admin-header h1 { font-size: 1.4rem; }
+        .admin-header p { font-size: 0.85rem; opacity: 0.75; margin-top: 0.3rem; }
+        .admin-badge {
+            display: inline-block;
+            background: rgba(239,68,68,0.2);
+            color: #fecaca;
+            padding: 0.2rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 1.8rem;
+            margin-bottom: 2rem;
+        }
+        .card h2 {
+            font-size: 1.15rem;
+            margin-bottom: 1.2rem;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.6rem;
+            display: inline-block;
+        }
+
+        label { display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.3rem; color:#475569; }
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.92rem;
+            margin-bottom: 1rem;
+            font-family: inherit;
+            background-color: white;
+            color: var(--text-color);
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--primary-color); }
+
+        .question-block {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            background-color: var(--muted-bg);
+            position: relative;
+        }
+        .question-block .q-head {
+            display:flex; justify-content:space-between; align-items:center; margin-bottom:0.8rem;
+        }
+        .question-block .q-head span { font-weight:700; color: var(--secondary-color); }
+        .row-2 { display:grid; grid-template-columns: 2fr 1fr; gap: 1rem; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.3rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: #e6712a; }
+        .btn-secondary { background-color: var(--secondary-color); color: white; }
+        .btn-secondary:hover { background-color: #2369a8; }
+        .btn-outline { background-color: transparent; border: 1px solid var(--border-color); color: var(--text-color); }
+        .btn-outline:hover { background-color: var(--muted-bg); }
+        .btn-danger { background-color: #fee2e2; color: var(--danger); }
+        .btn-danger:hover { background-color: #fecaca; }
+        .btn-sm { padding: 0.35rem 0.8rem; font-size: 0.78rem; }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .score-summary {
+            display: flex;
+            gap: 1.5rem;
+            padding: 0.8rem 1rem;
+            background-color: var(--muted-bg);
+            border-radius: 8px;
+            margin-bottom: 1.2rem;
+            font-size: 0.9rem;
+            flex-wrap: wrap;
+        }
+        .score-summary .ok { color: var(--success); font-weight: 700; }
+        .score-summary .warn { color: var(--danger); font-weight: 700; }
+
+        table { width: 100%; border-collapse: collapse; }
+        table th, table td { padding: 0.7rem 0.6rem; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 0.88rem; }
+        table th { font-size: 0.75rem; text-transform: uppercase; color: #64748b; }
+
+        .alert { padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 1rem; font-size: 0.88rem; display:none; }
+        .alert-success { background-color: #d1fae5; color: #065f46; }
+        .alert-error { background-color: #fee2e2; color: #991b1b; }
+
+        .empty-state { text-align: center; padding: 2rem; opacity: 0.6; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="admin-header">
+        <div class="container">
+            <span class="admin-badge"><i class="fas fa-lock"></i> TRANG QUẢN TRỊ - KHÔNG CÔNG KHAI</span>
+            <h1><i class="fas fa-toolbox"></i> Quản trị Đề thi &amp; Barem chấm điểm</h1>
+            <p>Trang này không hiện trên thanh menu của website. Chỉ chia sẻ đường dẫn này cho quản trị viên.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="alert-box" class="alert"></div>
+
+        <!-- Form tạo đề thi -->
+        <div class="card">
+            <h2><i class="fas fa-plus-circle"></i> Tạo đề thi mới</h2>
+
+            <label>Tên đề thi (để phân biệt, ví dụ: "Đề số 1 - Sóng")</label>
+            <input type="text" id="exam-title" placeholder="Đề số 1...">
+
+            <label>Đoạn văn / đoạn thơ đọc hiểu</label>
+            <textarea id="reading-passage" style="min-height:120px;" placeholder="Dán đoạn văn/đoạn thơ vào đây..."></textarea>
+
+            <h3 style="margin: 1.2rem 0 0.8rem; font-size:1rem;">Câu hỏi đọc hiểu</h3>
+            <div id="questions-container"></div>
+            <button type="button" id="add-question-btn" class="btn btn-outline btn-sm" style="margin-bottom:1rem;">
+                <i class="fas fa-plus"></i> Thêm câu hỏi
+            </button>
+
+            <div class="score-summary">
+                <span>Tổng điểm đọc hiểu hiện tại: <strong id="reading-total-display">0.0</strong> / 4.0</span>
+                <span id="reading-total-status"></span>
+            </div>
+
+            <h3 style="margin: 1.2rem 0 0.8rem; font-size:1rem;">Câu 1 - Nghị luận xã hội (2.0 điểm)</h3>
+            <label>Đề bài câu 1</label>
+            <textarea id="task1-content" placeholder="Viết đoạn văn (khoảng 200 chữ) trình bày suy nghĩ về..."></textarea>
+            <label>Đáp án / Barem chấm câu 1 (tiêu chí để AI dựa vào chấm điểm)</label>
+            <textarea id="task1-rubric" placeholder="Ví dụ: Bố cục rõ ràng (0.5đ); Lập luận chặt chẽ (0.5đ); Dẫn chứng thuyết phục (0.5đ); Diễn đạt trôi chảy (0.5đ)..."></textarea>
+            <label>Điểm tối đa câu 1</label>
+            <input type="number" id="task1-max" value="2.0" step="0.1" min="0">
+
+            <h3 style="margin: 1.2rem 0 0.8rem; font-size:1rem;">Câu 2 - Nghị luận văn học (4.0 điểm)</h3>
+            <label>Đề bài câu 2</label>
+            <textarea id="task2-content" placeholder="Phân tích đoạn trích/tác phẩm..."></textarea>
+            <label>Đáp án / Barem chấm câu 2 (tiêu chí để AI dựa vào chấm điểm)</label>
+            <textarea id="task2-rubric" placeholder="Ví dụ: Mở bài đầy đủ (0.5đ); Thân bài phân tích sâu (2đ); Kết bài khái quát (0.5đ); Diễn đạt, chính tả (1đ)..."></textarea>
+            <label>Điểm tối đa câu 2</label>
+            <input type="number" id="task2-max" value="4.0" step="0.1" min="0">
+
+            <div class="score-summary">
+                <span>Tổng điểm toàn đề: <strong id="grand-total-display">0.0</strong> / 10.0</span>
+                <span id="grand-total-status"></span>
+            </div>
+
+            <button type="button" id="save-exam-btn" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu đề thi
+            </button>
+        </div>
+
+        <!-- Danh sách đề thi -->
+        <div class="card">
+            <h2><i class="fas fa-list"></i> Danh sách đề thi hiện có</h2>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên đề</th>
+                            <th>Số câu đọc hiểu</th>
+                            <th>Tổng điểm</th>
+                            <th>Ngày tạo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="exam-list-body">
+                        <tr><td colspan="5" class="empty-state">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bảng xếp hạng (xem nhanh, có thể xoá) -->
+        <div class="card">
+            <h2><i class="fas fa-trophy"></i> Bảng xếp hạng (điểm 10)</h2>
+            <div style="overflow-x:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên</th>
+                            <th>Đề thi</th>
+                            <th>Thời gian</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-admin-body">
+                        <tr><td colspan="4" class="empty-state">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyAu4xlTa51eZrb9b2xhWKkbOv-L8gpPDPg",
+            authDomain: "xta-tl.firebaseapp.com",
+            projectId: "xta-tl",
+            storageBucket: "xta-tl.firebasestorage.app",
+            messagingSenderId: "1049275322449",
+            appId: "1:1049275322449:web:9ad1ed1986bb1712942870",
+            measurementId: "G-MC2V2CK2XF"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let questionCount = 0;
+        const questionsContainer = document.getElementById('questions-container');
+
+        function addQuestion(prefill) {
+            questionCount++;
+            const num = questionCount;
+            const block = document.createElement('div');
+            block.className = 'question-block';
+            block.dataset.num = num;
+            block.innerHTML = `
+                <div class="q-head">
+                    <span>Câu ${num}</span>
+                    <button type="button" class="btn btn-danger btn-sm remove-question-btn"><i class="fas fa-trash"></i> Xoá</button>
+                </div>
+                <label>Nội dung câu hỏi</label>
+                <textarea class="q-content" style="min-height:60px;" placeholder="Nội dung câu hỏi..."></textarea>
+                <div class="row-2">
+                    <div>
+                        <label>Dạng câu hỏi</label>
+                        <select class="q-type">
+                            <option value="Nhận biết">Nhận biết</option>
+                            <option value="Thông hiểu">Thông hiểu</option>
+                            <option value="Vận dụng">Vận dụng</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Điểm tối đa</label>
+                        <input type="number" class="q-max" value="1.0" step="0.1" min="0">
+                    </div>
+                </div>
+                <label>Đáp án / Gợi ý chấm (để AI dựa vào chấm điểm)</label>
+                <textarea class="q-answer" placeholder="Đáp án chuẩn hoặc các ý chính cần có trong câu trả lời..."></textarea>
+            `;
+            questionsContainer.appendChild(block);
+
+            block.querySelector('.remove-question-btn').addEventListener('click', () => {
+                block.remove();
+                renumberQuestions();
+                updateTotals();
+            });
+            block.querySelector('.q-max').addEventListener('input', updateTotals);
+
+            if (prefill) {
+                block.querySelector('.q-content').value = prefill.content || '';
+                block.querySelector('.q-type').value = prefill.type || 'Nhận biết';
+                block.querySelector('.q-max').value = prefill.maxScore != null ? prefill.maxScore : 1.0;
+                block.querySelector('.q-answer').value = prefill.answer || '';
+            }
+            updateTotals();
+        }
+
+        function renumberQuestions() {
+            const blocks = questionsContainer.querySelectorAll('.question-block');
+            blocks.forEach((b, i) => {
+                b.dataset.num = i + 1;
+                b.querySelector('.q-head span').textContent = `Câu ${i + 1}`;
+            });
+            questionCount = blocks.length;
+        }
+
+        document.getElementById('add-question-btn').addEventListener('click', () => addQuestion());
+
+        function updateTotals() {
+            let readingTotal = 0;
+            questionsContainer.querySelectorAll('.q-max').forEach(input => {
+                readingTotal += parseFloat(input.value) || 0;
+            });
+            const task1Max = parseFloat(document.getElementById('task1-max').value) || 0;
+            const task2Max = parseFloat(document.getElementById('task2-max').value) || 0;
+            const grandTotal = readingTotal + task1Max + task2Max;
+
+            document.getElementById('reading-total-display').textContent = readingTotal.toFixed(1);
+            const readingStatus = document.getElementById('reading-total-status');
+            readingStatus.innerHTML = Math.abs(readingTotal - 4.0) < 0.01
+                ? '<span class="ok"><i class="fas fa-check-circle"></i> Hợp lệ</span>'
+                : '<span class="warn"><i class="fas fa-exclamation-triangle"></i> Nên bằng 4.0</span>';
+
+            document.getElementById('grand-total-display').textContent = grandTotal.toFixed(1);
+            const grandStatus = document.getElementById('grand-total-status');
+            grandStatus.innerHTML = Math.abs(grandTotal - 10.0) < 0.01
+                ? '<span class="ok"><i class="fas fa-check-circle"></i> Hợp lệ (10 điểm)</span>'
+                : '<span class="warn"><i class="fas fa-exclamation-triangle"></i> Nên bằng 10.0</span>';
+        }
+
+        document.getElementById('task1-max').addEventListener('input', updateTotals);
+        document.getElementById('task2-max').addEventListener('input', updateTotals);
+
+        // Khởi tạo với 4 câu hỏi mẫu
+        for (let i = 0; i < 4; i++) addQuestion();
+
+        function showAlert(message, type) {
+            const box = document.getElementById('alert-box');
+            box.textContent = message;
+            box.className = `alert alert-${type}`;
+            box.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            setTimeout(() => { box.style.display = 'none'; }, 4000);
+        }
+
+        document.getElementById('save-exam-btn').addEventListener('click', async () => {
+            const title = document.getElementById('exam-title').value.trim();
+            const passage = document.getElementById('reading-passage').value.trim();
+            const blocks = Array.from(questionsContainer.querySelectorAll('.question-block'));
+
+            if (!title || !passage || blocks.length === 0) {
+                showAlert('Vui lòng nhập tên đề, đoạn văn đọc hiểu và ít nhất 1 câu hỏi.', 'error');
+                return;
+            }
+
+            const questions = blocks.map((b, i) => ({
+                number: i + 1,
+                content: b.querySelector('.q-content').value.trim(),
+                type: b.querySelector('.q-type').value,
+                maxScore: parseFloat(b.querySelector('.q-max').value) || 0,
+                answer: b.querySelector('.q-answer').value.trim()
+            }));
+
+            if (questions.some(q => !q.content)) {
+                showAlert('Vui lòng điền đầy đủ nội dung cho tất cả câu hỏi.', 'error');
+                return;
+            }
+
+            const task1Content = document.getElementById('task1-content').value.trim();
+            const task1Rubric = document.getElementById('task1-rubric').value.trim();
+            const task1Max = parseFloat(document.getElementById('task1-max').value) || 2.0;
+            const task2Content = document.getElementById('task2-content').value.trim();
+            const task2Rubric = document.getElementById('task2-rubric').value.trim();
+            const task2Max = parseFloat(document.getElementById('task2-max').value) || 4.0;
+
+            if (!task1Content || !task1Rubric || !task2Content || !task2Rubric) {
+                showAlert('Vui lòng điền đầy đủ đề bài và barem cho câu 1 và câu 2.', 'error');
+                return;
+            }
+
+            const examDoc = {
+                title: title,
+                reading: { passage: passage, questions: questions },
+                writing: {
+                    task1: { content: task1Content, rubric: task1Rubric, maxScore: task1Max },
+                    task2: { content: task2Content, rubric: task2Rubric, maxScore: task2Max }
+                },
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            const saveBtn = document.getElementById('save-exam-btn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+
+            try {
+                await db.collection('de_thi').add(examDoc);
+                showAlert('Lưu đề thi thành công!', 'success');
+                resetForm();
+                loadExamList();
+            } catch (error) {
+                console.error('Lỗi khi lưu đề thi:', error);
+                showAlert('Có lỗi xảy ra khi lưu đề thi: ' + error.message, 'error');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i class="fas fa-save"></i> Lưu đề thi';
+            }
+        });
+
+        function resetForm() {
+            document.getElementById('exam-title').value = '';
+            document.getElementById('reading-passage').value = '';
+            document.getElementById('task1-content').value = '';
+            document.getElementById('task1-rubric').value = '';
+            document.getElementById('task1-max').value = '2.0';
+            document.getElementById('task2-content').value = '';
+            document.getElementById('task2-rubric').value = '';
+            document.getElementById('task2-max').value = '4.0';
+            questionsContainer.innerHTML = '';
+            questionCount = 0;
+            for (let i = 0; i < 4; i++) addQuestion();
+        }
+
+        /* ===== Danh sách đề thi ===== */
+        function loadExamList() {
+            const body = document.getElementById('exam-list-body');
+            db.collection('de_thi').orderBy('createdAt', 'desc').get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        body.innerHTML = '<tr><td colspan="5" class="empty-state">Chưa có đề thi nào</td></tr>';
+                        return;
+                    }
+                    body.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        const numQuestions = d.reading && d.reading.questions ? d.reading.questions.length : 0;
+                        let total = 0;
+                        if (d.reading && d.reading.questions) d.reading.questions.forEach(q => total += (q.maxScore || 0));
+                        if (d.writing) {
+                            total += (d.writing.task1 ? d.writing.task1.maxScore || 0 : 0);
+                            total += (d.writing.task2 ? d.writing.task2.maxScore || 0 : 0);
+                        }
+                        const date = d.createdAt ? d.createdAt.toDate().toLocaleDateString('vi-VN') : '--';
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="font-weight:600;">${escapeHtml(d.title || '(Không tên)')}</td>
+                            <td>${numQuestions}</td>
+                            <td>${total.toFixed(1)}/10</td>
+                            <td>${date}</td>
+                            <td><button class="btn btn-danger btn-sm delete-exam-btn" data-id="${doc.id}"><i class="fas fa-trash"></i></button></td>
+                        `;
+                        body.appendChild(row);
+                    });
+
+                    body.querySelectorAll('.delete-exam-btn').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            if (!confirm('Bạn có chắc muốn xoá đề thi này?')) return;
+                            try {
+                                await db.collection('de_thi').doc(btn.dataset.id).delete();
+                                loadExamList();
+                            } catch (error) {
+                                showAlert('Lỗi khi xoá đề: ' + error.message, 'error');
+                            }
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải danh sách đề:', error);
+                    body.innerHTML = '<tr><td colspan="5" class="empty-state">Có lỗi khi tải danh sách</td></tr>';
+                });
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        /* ===== Bảng xếp hạng ===== */
+        function loadLeaderboardAdmin() {
+            const body = document.getElementById('leaderboard-admin-body');
+            db.collection('leaderboard').orderBy('timestamp', 'desc').limit(50).get()
+                .then(snapshot => {
+                    if (snapshot.empty) {
+                        body.innerHTML = '<tr><td colspan="4" class="empty-state">Chưa có dữ liệu</td></tr>';
+                        return;
+                    }
+                    body.innerHTML = '';
+                    snapshot.forEach(doc => {
+                        const d = doc.data();
+                        const date = d.timestamp ? d.timestamp.toDate().toLocaleString('vi-VN') : '--';
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td style="font-weight:600;">${escapeHtml(d.name || '')}</td>
+                            <td>${escapeHtml(d.examTitle || '')}</td>
+                            <td>${date}</td>
+                            <td><button class="btn btn-danger btn-sm delete-rank-btn" data-id="${doc.id}"><i class="fas fa-trash"></i></button></td>
+                        `;
+                        body.appendChild(row);
+                    });
+                    body.querySelectorAll('.delete-rank-btn').forEach(btn => {
+                        btn.addEventListener('click', async () => {
+                            if (!confirm('Xoá mục này khỏi bảng xếp hạng?')) return;
+                            await db.collection('leaderboard').doc(btn.dataset.id).delete();
+                            loadLeaderboardAdmin();
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Lỗi khi tải bảng xếp hạng:', error);
+                    body.innerHTML = '<tr><td colspan="4" class="empty-state">Có lỗi khi tải dữ liệu</td></tr>';
+                });
+        }
+
+        loadExamList();
+        loadLeaderboardAdmin();
+    </script>
+</body>
+</html>
